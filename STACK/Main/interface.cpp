@@ -1,7 +1,7 @@
 #include "interface.h"
 #include "data.h"
 #include "stack.h"
-
+#include "data_validate.h"
 
 
 #pragma warning(disable:4996)
@@ -27,21 +27,9 @@ void end() {
 	temp[0] = 'x';
 	temp[1] = '\0';
 
-	printf("\n\n\tWpisz 'x' aby kontynuowac: ");
+	printf("\n\n\tWpisz cokolwiek aby kontynuowac: ");
 	scanf("%s", comp);
 
-	if (strcmp(temp, comp) == 0) {
-		system("cls");
-		free(temp);
-		free(comp);
-		return;
-	}
-	else {
-		while (strcmp(temp, comp) != 0) {
-			printf("\n\tBlad... Podaj litere jeszcze raz: ");
-			scanf("%s", comp);
-		}
-	}
 	free(temp);
 	free(comp);
 	system("cls");
@@ -50,26 +38,58 @@ void end() {
 
 //obsluga stosu
 void push() {
-	char *nazwisko = (char*)malloc(255*sizeof(char));// = (char*)malloc(255 * sizeof(char));
+	char *nazwisko = (char*)malloc(255*sizeof(char));
 	int rok;
-	SPECS spec;
+	int spec;
+
+	//zmienna pomocnicza
+	char buffer[255];
+
 	system("cls");
 	printf("\n\tDODAWANIE NOWEGO ELEMENTU");
+
+	//kierunek
 	printf("\n\t(0)Informatyka        ");
 	printf("\n\t(1)Matematyka        ");
 	printf("\n\t(2)Fizyka        ");
-	printf("\n\n\tKierunek(nr): ");
-	scanf("%d", &spec);
-	printf("\tNazwisko:     ");
-	scanf("%s", nazwisko);
-	printf("\tRok:          ");
-	scanf("%d", &rok);
+	printf("\n\n\tKierunek(nr):   ");
+	scanf("%s", buffer);
 
-	void *n_data = DATA_new(nazwisko, spec, rok);
+	//walidacja danych
+	if (spec_validate(buffer)) {
+		end();
+		return;
+	} 
+	spec = (int)atoi(buffer);
+	memset(buffer, 0, 255);
 
-	if (STACK_push(n_data) != NULL) {
-		printf("\n\tPomyslnie dodano dane na stos !");
+	//nazwisko
+	printf("\tNazwisko:       ");
+	scanf("%s", buffer);
+	//walidacja danych
+	if (surname_validate(buffer)) {
+		end();
+		return;
 	}
+	strcpy(nazwisko, buffer);
+	memset(buffer, 0, 255);
+
+	//rok
+	printf("\tRok(1900-2020): ");
+	scanf("%s", buffer);
+	//walidacja danych
+	if (year_validate(buffer)) {
+		end();
+		return;
+	}
+	rok = (int)atoi(buffer);
+
+	//jesli wszystkie dane sa poprawne tworzymy element i dodajemy na stos
+	void *n_data = DATA_new(nazwisko,(SPECS)spec, rok);
+
+	if (STACK_push(n_data) != NULL) printf("\n\tPomyslnie dodano dane na stos !");
+	else printf("\n\tBlad dodawania");
+	free(nazwisko);
 	end();
 }
 void pop() {
@@ -96,7 +116,16 @@ void show_stack() {
 	STACK_show_stack(DATA_show);
 	end();
 }
-
+void find() {
+	system("cls");
+	char *temp = (char*)malloc(255 * sizeof(char));
+	printf("\n\tSZUKANIE ELEMENTU PO NAZWISKU");
+	printf("\n\tPodaj nazwisko: ");
+	scanf("%s", temp);
+	void *s;
+	STACK_find_surname(temp, (DATA_COMP_SURNAME*)DATA_compare_surname, DATA_show);
+	end();
+}
 //TODO
 
 void save() {
@@ -105,53 +134,4 @@ void save() {
 void load() {
 
 }
-void find() {
-	system("cls");
-	char *temp = (char*)malloc(255 * sizeof(char));
-	printf("\n\tSZUKANIE ELEMENTU PO NAZWISKU");
-	printf("\n\tPodaj nazwisko: ");
-	scanf("%s", temp);
-	void *s;
-	STACK_find_surname(temp, (DATA_COMP_SURNAME*)DATA_compare_surname,DATA_show);
-	end();
-}
 
-//void find() {
-//	system("cls");
-//	printf("\n\tSZUKANIE ELEMENTU");
-//	printf("\n\tSPOSOB SZUKANIA: ");
-//	printf("\n\t(0)po roku");
-//	printf("\n\t(1)po nazwisku");
-//	printf("\n\t(2)po specjalizacji");
-//	printf("\n\tOpcja: ");
-//	SEARCH_TYPE s = SURNAME;
-//	scanf("%d", &s);
-//	system("cls");
-//	int *temp_int = (int*)malloc(sizeof(int));
-//	char *temp_char = (char*)malloc(255 * sizeof(char));
-//	int *temp_spec = (int*)malloc(sizeof(int));
-//	switch (s) {
-//	case YEAR:
-//		printf("\n\tSZUKANIE PO ROKU");
-//		printf("\n\tPodaj rok: ");
-//		scanf("%d", temp_int);
-//		STACK_find(YEAR, (void*)temp_int);
-//		break;
-//	case SURNAME:
-//		printf("\n\tSZUKANIE PO NAZWISKU");
-//		printf("\n\tPodaj nazwisko: ");
-//		scanf("%s", temp_char);
-//		STACK_find(SURNAME, (void*)temp_char);
-//		break;
-//	case SPEC:
-//		printf("\n\tSZUKANIE PO SPECJALIZACJI");
-//		printf("\n\t(0)Informatyka        ");
-//		printf("\n\t(1)Matematyka        ");
-//		printf("\n\t(2)Fizyka        ");
-//		printf("\n\tPodaj nr specjalizacji: ");
-//		scanf("%d", temp_spec);
-//		STACK_find(SPEC, (void*)temp_spec);
-//		break;
-//	}
-//	end();
-//}

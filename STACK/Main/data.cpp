@@ -57,6 +57,8 @@ int DATA_compare_surname(char *test_surname, void *ptr1) {
 	else return 0;
 }
 
+
+
 //int DATA_compare_surname(void *test_surname, void *ptr1) {
 //	DATA *temp = (DATA*)ptr1;
 //	if (!strcmp((char*)test_surname, temp->surname)) return 1;

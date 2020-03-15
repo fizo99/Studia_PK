@@ -130,20 +130,23 @@ void STACK_find_surname(char *surname,DATA_COMP_SURNAME comp_surname, DATA_SHOW 
 		return;
 	}
 	STACK *current = first;
+	int k = 0;
 	int i = 1;
 	while (current != NULL) {
 		if (comp_surname(surname, current->data)) {
 			printf("\n");
-			printf("\t%d\n",i);
+			printf("\t%d.\n",i);
 			show(current->data);
 			current = current->next;
 			i++;
+			k++;
 		}
 		else {
 			current = current->next;
 			i++;
 		}
 	}
+	if (k == 0) printf("\n\tBrak wynikow");
 }
 
 void STACK_save() {

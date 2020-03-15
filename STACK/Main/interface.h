@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <cstdlib>
 
 #include "data.h"
 #include "stack.h"

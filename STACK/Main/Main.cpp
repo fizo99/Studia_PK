@@ -24,6 +24,7 @@
 */
 
 #include "interface.h"
+#include <cctype>
 
 #pragma warning (disable:4996)
 

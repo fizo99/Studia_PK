@@ -24,7 +24,9 @@ struct DATA {
 void DATA_show(void *ptr);											//wyprowadzenie na monitor
 int  DATA_free(void *ptr);											//zwolnienie pamieci
 void *DATA_new(char *surname, SPECS spec, int year);				//stworzenie nowego obiektu
-int DATA_compare_surname(char *test_surname, void *ptr1);			//funkcja porownujaca 
+int DATA_compare_surname(char *test_surname, void *ptr1);			//funkcja porownujaca
+int DATA_save(void *ptr);
+int DATA_load(void *ptr);
 
 
 //int DATA_compare_year(void  *test_year, void *ptr1);
