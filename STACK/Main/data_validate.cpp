@@ -1,6 +1,6 @@
 #include "data_validate.h"
 
-int surname_validate(char *buffer) {
+bool surname_validate(char *buffer) {
 	int length = strlen(buffer);
 	int i = 0;
 	while (i < length) {
@@ -10,35 +10,35 @@ int surname_validate(char *buffer) {
 		}
 		else {
 			printf("\tBlad wczytywania nazwiska\n");
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
-int spec_validate(char *buffer) {
+bool spec_validate(char *buffer) {
 	if (strlen(buffer)==1) {
-		if (buffer[0] == '0') return 0;
-		else if (buffer[0] == '1' || buffer[0] == '2') return 0;
+		if (buffer[0] == '0') return false;
+		else if (buffer[0] == '1' || buffer[0] == '2') return false;
 		else {
 			printf("\n\tBlad wczytywania kierunku");
-			return 1;
+			return true;
 		}
 	}
 	printf("\n\tBlad wczytywania kierunku");
-	return 1;
+	return true;
 }
-int year_validate(char *buffer) {
+bool year_validate(char *buffer) {
 	if (strlen(buffer) == 4) {
 		for (int i = 0; i < 4; i++) {
 			if (isdigit(buffer[i]) == 0) {
 				printf("\n\tBlad wczytywania roku");
-				return 1;
+				return true;
 			}
 			else continue;
 		}
 		int year = (int)atoi(buffer);
-		if (year > 1899 && year < 2021) return 0;
+		if (year > 1899 && year < 2021) return false;
 	}
 	printf("\n\tBlad wczytywania roku");
-	return 1;
+	return true;
 }

@@ -22,17 +22,14 @@ void show_menu() {
 	printf("\n\tOpcja: ");
 }
 void end() {
-	char *temp = (char*)malloc(2);
 	char *comp = (char*)malloc(2);
-	temp[0] = 'x';
-	temp[1] = '\0';
 
 	printf("\n\n\tWpisz cokolwiek aby kontynuowac: ");
-	scanf("%s", comp);
+	if (scanf("%s", comp)) {
+		free(comp);
+		system("cls");
+	}
 
-	free(temp);
-	free(comp);
-	system("cls");
 }
 
 
@@ -87,7 +84,7 @@ void push() {
 	//jesli wszystkie dane sa poprawne tworzymy element i dodajemy na stos
 	void *n_data = DATA_new(nazwisko,(SPECS)spec, rok);
 
-	if (STACK_push(n_data) != NULL) printf("\n\tPomyslnie dodano dane na stos !");
+	if(STACK_push(n_data)) printf("\n\tPomyslnie dodano dane na stos !");
 	else printf("\n\tBlad dodawania");
 	free(nazwisko);
 	end();
@@ -126,12 +123,45 @@ void find() {
 	STACK_find_surname(temp, (DATA_COMP_SURNAME*)DATA_compare_surname, DATA_show);
 	end();
 }
+
 //TODO
 
 void save() {
+	char *buffer = (char*)malloc(255 * sizeof(char));
 
+	system("cls");
+	printf("\n\tPodaj nazwe pliku: ");
+	scanf("%s", buffer);
+
+	FILE *f = fopen(buffer, "wb");
+	free(buffer);
+
+	//pointer to function
+	void(*foo)(FILE *f, void *ptr);
+	foo = &DATA_save;
+
+	STACK_save(f, foo);
+
+	fclose(f);
+	end();
 }
 void load() {
+	char *buffer = (char*)malloc(255 * sizeof(char));
 
+	system("cls");
+	printf("\n\tPodaj nazwe pliku: ");
+	scanf("%s", buffer);
+
+	FILE *f = fopen(buffer, "rb");
+	free(buffer);
+
+	//pointer to function
+	void*(*foo)(FILE *f,char*buffer);
+	foo = &DATA_load;
+
+	STACK_load(f, foo);
+
+	fclose(f);
+	end();
 }
 

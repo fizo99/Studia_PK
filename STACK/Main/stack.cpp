@@ -10,6 +10,7 @@
 //		{} odczyt z dysku
 
 #include "stack.h"
+#pragma warning (disable:4996)
 
 static STACK *first = NULL; //wskaznik do 1-go elementu
 static int capacity = 0;	//licznik ilosci elementow stosu
@@ -122,9 +123,7 @@ void STACK_show_stack (DATA_SHOW show) {
 		printf("\n");
 	}
 }
-
-//TODO
-void STACK_find_surname(char *surname,DATA_COMP_SURNAME comp_surname, DATA_SHOW show) {
+void STACK_find_surname(char *surname, DATA_COMP_SURNAME comp_surname, DATA_SHOW show) {
 	if (first == NULL) {
 		printf("\n\tStos jest pusty");
 		return;
@@ -135,7 +134,7 @@ void STACK_find_surname(char *surname,DATA_COMP_SURNAME comp_surname, DATA_SHOW 
 	while (current != NULL) {
 		if (comp_surname(surname, current->data)) {
 			printf("\n");
-			printf("\t%d.\n",i);
+			printf("\t%d.\n", i);
 			show(current->data);
 			current = current->next;
 			i++;
@@ -148,12 +147,26 @@ void STACK_find_surname(char *surname,DATA_COMP_SURNAME comp_surname, DATA_SHOW 
 	}
 	if (k == 0) printf("\n\tBrak wynikow");
 }
+//TODO
 
-void STACK_save() {
 
+void *STACK_ret_first() {
+	return (void*)first;
 }
-void STACK_read() {
 
+void STACK_save(FILE *f, DATA_SAVE save) {
+	STACK *temp = first;
+	while (temp != NULL) {
+		save(f, temp->data);
+		temp = temp->next;
+	}
+}
+void STACK_load(FILE *f, DATA_LOAD load) {
+	//void *ptr;
+	char buffer[255];
+	while (fscanf(f, "%s", buffer) != EOF) {
+		STACK_push(load(f, buffer));
+	}
 }
 
 //void STACK_find(SEARCH_TYPE type,void *data){

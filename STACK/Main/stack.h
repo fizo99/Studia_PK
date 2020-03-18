@@ -17,6 +17,8 @@ typedef enum SPECS SPECS;
 typedef void *(*DATA_NEW)(char surname[], SPECS spec, int year);	//wskaznik do funkcji tworzacej obiekt(strukture) typu DATA
 typedef void (DATA_SHOW) (void *ptr);								//wskaznik do funkcji pokazujacej dane struktury DATA
 typedef int	 (DATA_FREE) (void *ptr);								//wskaznik do funkcji zwalniajacej miejsce po strukturze DATA
+typedef void (DATA_SAVE)(FILE *f,void *ptr);
+typedef void *(DATA_LOAD)(FILE *f,char *buffer);
 
 typedef int	 *(DATA_COMP_SURNAME)(char *test_surname, void *ptr1);
 
@@ -37,9 +39,10 @@ enum SEARCH_TYPE {
 int STACK_capacity	  ();
 int	STACK_free		  (DATA_FREE clear);	//zwolnienie pamieci
 void *STACK_push	  (void *pdat);			//dodanie nowego elementu
+void *STACK_ret_first ();					//zwraca 1 element
 void STACK_pop		  (DATA_FREE clear);	//usuniecie pierwszego elementu
 void STACK_show_first (DATA_SHOW show);		//pokazanie 1 elementu
 void STACK_show_stack (DATA_SHOW show);		//wyswietlenie calego stosu
 void STACK_find_surname(char *surname, DATA_COMP_SURNAME comp_surname, DATA_SHOW show);							//odnalezienie podanego elementu
-void STACK_save();							//zapis na dysk
-void STACK_read();							//odczyt z dysku
+void STACK_save(FILE *f, DATA_SAVE save);						//zapis na dysk
+void STACK_load(FILE *f, DATA_LOAD load);							//odczyt z dysku
