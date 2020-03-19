@@ -151,17 +151,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="data.cpp" />
-    <ClCompile Include="data_validate.cpp" />
-    <ClCompile Include="interface.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="stack.cpp" />
+    <ClCompile Include="src\data.cpp" />
+    <ClCompile Include="src\interface.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\stack.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="data.h" />
-    <ClInclude Include="interface.h" />
-    <ClInclude Include="data_validate.h" />
-    <ClInclude Include="stack.h" />
+    <ClInclude Include="src\headers\data.h" />
+    <ClInclude Include="src\headers\interface.h" />
+    <ClInclude Include="src\headers\stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
