@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "error.h"
+
 typedef void (DATA_SHOW) (void *ptr);								//data.h -> DATA_show				
 typedef void (DATA_SAVE)(FILE *f,void *ptr);						//data.h -> DATA_save
 typedef void *(DATA_LOAD)(FILE *f,char *buffer);					//data.h -> DATA_load
@@ -15,6 +17,8 @@ struct STACK {
 	STACK *next;
 };
 
+// initialization of stack
+void STACK_init();
 // adds element to the top of stack then returns it
 void *STACK_push(void *pdat);
 // removes element from the top of stack
@@ -28,15 +32,16 @@ void STACK_show_stack(DATA_SHOW show);
 // prints every element that match given surname
 void STACK_find_surname(char *surname, DATA_COMP_SURNAME comp_surname, DATA_SHOW show);
 // writes all stack elements to given file
-void STACK_save(FILE *f, DATA_SAVE save);
+bool STACK_save(FILE *f, DATA_SAVE save);
 // loads stack to memory from given file
 void STACK_load(FILE *f, DATA_LOAD load);
 // returns first element of stack
 void *STACK_ret_first();					
 
-// inverts the contents of the file (first line <-> last line)
-void reverse_file(FILE *f);
-// returns number of lines in file
-int num_lines(FILE *f);
 // returns number of stack elements
 int STACK_capacity();
+// returns number of lines in file
+int num_lines(FILE *f);
+// inverts the contents of the file (first line <-> last line)
+void reverse_file(FILE *f);
+

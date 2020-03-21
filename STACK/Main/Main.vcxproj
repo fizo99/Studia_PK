@@ -152,12 +152,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\data.cpp" />
+    <ClCompile Include="src\error.cpp" />
     <ClCompile Include="src\interface.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\data.h" />
+    <ClInclude Include="src\headers\error.h" />
     <ClInclude Include="src\headers\interface.h" />
     <ClInclude Include="src\headers\stack.h" />
   </ItemGroup>

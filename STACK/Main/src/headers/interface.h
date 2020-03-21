@@ -11,6 +11,7 @@
 
 #include "data.h"
 #include "stack.h"
+#include "error.h"
 
 enum OPTION {
 	PUSH,
@@ -32,10 +33,12 @@ void show_stack();
 void find();
 void save();
 void load();
+void clear_and_quit();
 
 // menu
 void show_menu();
 void end();
+void clean_stream();
 
 // data validation
 bool surname_validate(char *buffer);

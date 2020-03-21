@@ -12,7 +12,7 @@ void *DATA_new(char *surname, SPECS spec, int year) {
 	}
 	return (void *)temp;
 }
-bool  DATA_free(void *ptr) {
+bool DATA_free(void *ptr) {
 	if (ptr != NULL) {
 		free(ptr);
 		return true;
@@ -23,8 +23,8 @@ void  DATA_show(void *ptr) {
 	if (ptr != NULL) {
 		DATA *temp = (DATA *)ptr;
 
-		printf("\tSurname:   %s\n", temp->surname);
-		printf("\tYear:      %d\n", temp->year);
+		printf("\tSurname:        %s\n", temp->surname);
+		printf("\tYear:           %d\n", temp->year);
 
 		switch (temp->spec) {
 		case COMPSCI:
