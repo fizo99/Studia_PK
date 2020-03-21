@@ -1,7 +1,6 @@
 # Stack
-##### Implementation of **stack** using **singly linked list**.
-&nbsp;
-Contains console UI and basic error handling.
+##### Implementation of **stack** using **singly linked list**.  
+Contains console UI and basic error handling.  
 Uses objects with student data (surname, year, specialization) to show functions in use.
 ##### Available functionalities:
   - ```push()``` - add element to the top
@@ -14,6 +13,6 @@ Uses objects with student data (surname, year, specialization) to show functions
   - ```load()``` - read whole stack from .bin file 
 &nbsp;
 
-Built in Microsoft Visual Studio v15.9.20
+Built in Microsoft Visual Studio v15.9.20  
 Compiled with Visual C++ compiler ( MSVC/ Microsoft C/C++)
 
