@@ -26,22 +26,22 @@ void *STACK_push(void *pdat){
 	capacity++;
 	return current;
 }
-void STACK_pop(DATA_FREE clear){
+void *STACK_pop(){
 	// empty stack
 	if (first == NULL) {
 		raise_communicate(STACK_EMPTY);
-		return;
+		return NULL;
 	}
 	// stack with at least 1 element
 	else {
-		STACK *temp = first->next;
-		if (clear(first->data)) {
-			free(first);
-			first = temp;
-			capacity--;
-			raise_communicate(STACK_ELEM_POPPED);
-		}
-		else raise_error(POP_FAILED);
+		STACK *tempST = first;
+		void *tempPTR = first->data;
+
+		first = first->next;
+		free(tempST);
+		tempST = NULL;
+		capacity--;
+		return tempPTR;
 	}
 }
 bool STACK_free(DATA_FREE clear) {
@@ -95,34 +95,26 @@ void STACK_show_stack(DATA_SHOW show) {
 		printf("\n");
 	}
 }
-void STACK_find_surname(char *surname, DATA_COMP_SURNAME comp_surname, DATA_SHOW show) {
+void STACK_find(DATA_COMP comp, void *ptr) {
 	if (first == NULL) {
 		raise_communicate(STACK_EMPTY);
 		return;
 	}
+
 	STACK *current = first;
-	int k = 0;
-	int i = 1;
 	while (current != NULL) {
-		if (comp_surname(surname, current->data)) {
-			printf("\n\t%d.\n", i);
-			show(current->data);
-			current = current->next;
-			i++;
-			k++;
-		}
-		else {
-			current = current->next;
-			i++;
-		}
+		comp(current->data, ptr);
+		current = current->next;
 	}
-	if (k == 0) raise_communicate(NO_RESULTS);
 }
 bool STACK_save(FILE *f, DATA_SAVE save) {
 	if (first == NULL) {
 		raise_communicate(STACK_EMPTY);
 		return false;
 	}
+
+	fwrite(&capacity, sizeof(int), 1, f); // size of stack
+
 	STACK *temp = first;
 	while (temp != NULL) {
 		save(f, temp->data);
@@ -131,15 +123,28 @@ bool STACK_save(FILE *f, DATA_SAVE save) {
 	return true;
 }
 void STACK_load(FILE *f, DATA_LOAD load) {
-	reverse_file(f);
+	int size;
+	fread(&size, sizeof(int), 1, f);
 
-	char buffer[255];
-	while (fscanf(f, "%s", buffer) != EOF) 
-		STACK_push(load(f, buffer));
+	STACK *last = (STACK*)malloc(sizeof(STACK));
+	last->data = load(f);
+	last->next = NULL;
+	capacity++;
+	size--;
 
-	fseek(f, 0, SEEK_SET);
+	STACK *temp = last;
 
-	reverse_file(f);
+	while (size != 0) {
+		STACK *newNode = (STACK*)malloc(sizeof(STACK));
+		newNode->data = load(f);
+		temp->next = newNode;
+		temp = newNode;
+		size--;
+		capacity++;
+	}
+
+	temp->next = first;
+	first = last;
 }
 void *STACK_ret_first() {
 	 return (void*)first;

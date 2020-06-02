@@ -3,17 +3,29 @@
 
 void *DATA_new(char *surname, SPECS spec, int year) {
 	DATA *temp = (DATA *)malloc(sizeof(DATA));
-	temp->surname = (char *)malloc(strlen(surname) * sizeof(char));
+
+	if (!temp)
+		return NULL;
+
+	if (surname)
+		temp->surname = (char *)malloc((strlen(surname) + 1) * sizeof(char)); //SF       + 1 ?
+	else
+		temp->surname = NULL;
+	//
 
 	if (temp != NULL) {
 		temp->spec = spec;
 		temp->year = year;
-		strcpy(temp->surname, surname);
+		if (surname)
+			strcpy(temp->surname, surname);
 	}
 	return (void *)temp;
 }
 bool DATA_free(void *ptr) {
-	if (ptr != NULL) {
+	if (ptr) {
+		DATA *temp = (DATA*)ptr;
+		if (temp->surname)
+			free(temp->surname);
 		free(ptr);
 		return true;
 	}
@@ -39,45 +51,44 @@ void  DATA_show(void *ptr) {
 		}
 	}
 }
-bool  DATA_compare_surname(char *test_surname, void *ptr1) {
-	DATA *temp = (DATA*)ptr1;
-	if (!strcmp(test_surname, temp->surname)) return true;
-	else return false;
+void DATA_compare_spec(void *ptr1, void *ptr2) {
+	DATA *temp1 = (DATA*)ptr1;
+	DATA *temp2 = (DATA*)ptr2;
+
+	if ((int)temp1->spec == (int)temp2->spec)
+		DATA_show(ptr1);
+}
+void DATA_compare_surname(void *ptr1, void *ptr2) {
+	DATA *temp1 = (DATA*)ptr1;
+	DATA *temp2 = (DATA*)ptr2;
+
+	if (temp1->surname && temp2->surname)
+		if (!strcmp(temp1->surname, temp2->surname))
+			DATA_show(ptr1);
+}
+void DATA_compare_year(void *ptr1, void *ptr2) {
+	DATA *temp1 = (DATA*)ptr1;
+	DATA *temp2 = (DATA*)ptr2;
+
+	if ((int)temp1->year == (int)temp2->year)
+		DATA_show(ptr1);
 }
 void  DATA_save(FILE *f, void *ptr) {
-	//SAVING WHOLE DATASET AS STRING(one line ended by '\n')
-	//format SURNAMEYEARSPECIALIZATION\n
-
 	DATA *temp = (DATA*)ptr;
-	char year[5];
-	char spec[2];
+	int length = strlen(temp->surname) + 1;
 
-	sprintf(year, "%d", temp->year);
-	sprintf(spec, "%d", temp->spec);
-	fwrite(temp->surname, sizeof(char), strlen(temp->surname), f);
-	fwrite(year, sizeof(char), strlen(year), f);
-	fwrite(spec, sizeof(char), strlen(spec), f);
-	fwrite("\n", sizeof(char), 1, f); //endline
+	fwrite(temp, 1, _msize(temp), f);
+	fwrite(&length, sizeof(int), 1, f);
+	fwrite(temp->surname, 1, _msize(temp->surname), f);
 }
-void *DATA_load(FILE *f, char *buffer) {
-	int j = 0;
-	int len = strlen(buffer);
-	char specbuff = '\0';
-	char yearbuff[5] = "\0";
-	char surnamebuff[255] = "\0";
+void *DATA_load(FILE *f) {
+	DATA *obj = (DATA*)malloc(sizeof(DATA));
+	int surnameSize;
 
-	specbuff = buffer[len - 1];
-	for (int i = (len - 5); i < (len - 1); i++) {
-		yearbuff[j] = buffer[i];
-		j++;
-	}
-	for (int i = 0; i < len - 5; i++) {
-		surnamebuff[i] = buffer[i];
-	}
+	fread(obj, 1, _msize(obj), f);
+	fread(&surnameSize, sizeof(int), 1, f);
+	obj->surname = (char*)malloc(sizeof(char)*surnameSize);
+	fread(obj->surname, 1, _msize(obj->surname), f);
 
-	int spec;
-	int year;
-	sscanf(&specbuff, "%d", &spec);
-	sscanf(yearbuff, "%d", &year);
-	return DATA_new(surnamebuff, (SPECS)spec, year);
+	return (void*)obj;
 }

@@ -4,6 +4,35 @@
 
 #pragma warning(disable:4996)
 
+#define pushOptionsSize 5
+#define searchOptionsSize 6
+#define menuOptionsSize 10
+
+static const char *searchOptions[] = { "\n\tSEARCHING\n"                 ,
+									   "\n\tCHOOSE OPTION\n"             ,
+									   "\n\t(0) Spec        "            ,
+									   "\n\t(1) Surname        "         ,
+									   "\n\t(2) Year        "            ,
+									   "\n\n\tChoice(number) :  " };
+
+static const char *pushOptions[] = { "\n\tADDING NEW ELEMENT"          ,
+									  "\n\t(0) Computer Science        ",
+									  "\n\t(1) Maths        "           ,
+									  "\n\t(2) Physics        "         ,
+									  "\n\n\tChoice(number) :  " };
+
+static const char *menuOptions[] = { "\n\tCHOOSE OPTION\n\n",
+									 "\t0: Push\n",
+									 "\t1: Pop\n",
+									 "\t2: Clear stack\n",
+									 "\t3: Show first element\n",
+									 "\t4: Show stack\n",
+									 "\t5: Look for element in stack\n",
+									 "\t6: Save stack to file\n",
+									 "\t7: Load stack from file\n",
+									 "\t8: Clear stack and stop programme\n" };
+
+
 void push() {
 	system("cls");
 	
@@ -14,13 +43,10 @@ void push() {
 	char buffer[255];
 	int retval;
 
-	printf("\n\tADDING NEW ELEMENT");
+	//menu
+	for (int i = 0; i < pushOptionsSize; i++)
+		printf("%s", pushOptions[i]);
 
-	//specialization
-	printf("\n\t(0) Computer Science        ");
-	printf("\n\t(1) Maths        ");
-	printf("\n\t(2) Physics        ");
-	printf("\n\n\tChoice (number):  ");
 	retval = scanf_s("%s", buffer,2);
 	
 	if (!retval || !spec_validate(buffer)) {
@@ -64,7 +90,10 @@ void push() {
 void pop() {
 	system("cls");
 
-	STACK_pop(DATA_free);
+	void *ptr = STACK_pop();
+	raise_communicate(STACK_ELEM_POPPED);
+	if (ptr)
+		DATA_free(ptr);
 	end();
 }
 void clear() {
@@ -101,19 +130,87 @@ void show_stack() {
 void find() {
 	system("cls");
 
-	char temp[255] = "\0";
 	int retval;
+	int op = 0;
+	for (int i = 0; i < searchOptionsSize; i++)
+		printf("%s", searchOptions[i]);
 
-	printf("\n\tSEARCHING BY SURNAME\n");
-	printf("\n\tsurname: ");
-	retval = scanf_s("%s", temp,254);
+	retval = scanf_s("%d", &op);
 	if (!retval) {
 		raise_error(INPUT_NOT_VALID);
 		clean_stream();
+		end();
 		return;
 	}
-	printf("\n\tRESULTS: ");
-	STACK_find_surname(temp, DATA_compare_surname, DATA_show);
+	char buffer[255];
+	int option;
+	switch (op) {
+	case 0:
+		//search by spec
+	{
+		for (int i = 1; i < pushOptionsSize; i++)
+			printf("%s", pushOptions[i]);
+		retval = scanf_s("%1s", buffer, (unsigned)_countof(buffer));
+		if (!retval) {
+			raise_error(INPUT_NOT_VALID);
+			clean_stream();
+			break;
+		}
+		option = (int)atoi(buffer);
+		if (!spec_validate(buffer)) {
+			raise_error(INPUT_NOT_VALID);
+			break;
+		}
+		void *obj = DATA_new(NULL, (SPECS)option, 0000); //temporary object
+		STACK_find(DATA_compare_spec, obj);
+		DATA_free(obj);
+		break;
+	}
+	case 1:
+		//search by surname
+	{
+		printf("\n\tEnter surname: ");
+		retval = scanf_s("%s", buffer, (unsigned)_countof(buffer));
+		if (!retval) {
+			raise_error(INPUT_NOT_VALID);
+			clean_stream();
+			break;
+		}
+		if (!surname_validate(buffer)) {
+			raise_error(INPUT_NOT_VALID);
+			break;
+		}
+		void *obj = DATA_new(buffer, (SPECS)0, 0000); //temporary object
+		STACK_find(DATA_compare_surname, obj);
+		DATA_free(obj);
+		break;
+	}
+
+	case 2:
+		//search by year
+	{
+		printf("\n\tEnter year: ");
+		retval = scanf_s("%4s", buffer, (unsigned)_countof(buffer));
+		if (!retval) {
+			raise_error(INPUT_NOT_VALID);
+			clean_stream();
+			break;
+		}
+		if (!year_validate(buffer)) {
+			raise_error(INPUT_NOT_VALID);
+			break;
+		}
+		option = (int)atoi(buffer);
+		void *obj = DATA_new(NULL, (SPECS)0, option); //temporary object
+		STACK_find(DATA_compare_year, obj);
+		DATA_free(obj);
+		break;
+	}
+
+	default:
+		raise_error(INPUT_NOT_VALID);
+		break;
+	}
 	end();
 }
 void save() {
@@ -173,16 +270,9 @@ void load() {
 	}
 	strncat(buffer, ext, 4);
 	
-	FILE *f = fopen(buffer, "rb+");
+	FILE *f = fopen(buffer, "rb");
 	if (f == NULL) {
 		raise_error(FILE_OPEN_FAILED);
-		end();
-		return;
-	}
-	int lines = num_lines(f);
-	if (lines == 0) {
-		raise_communicate(FILE_EMPTY);
-		fclose(f);
 		end();
 		return;
 	}
@@ -203,16 +293,9 @@ void clear_and_quit() {
 //menu
 void show_menu() {
 	system("cls");
-	printf("\n\tCHOOSE OPTION\n\n");
-	printf("\t0: Push\n");
-	printf("\t1: Pop\n");
-	printf("\t2: Clear stack\n");
-	printf("\t3: Show first element\n");
-	printf("\t4: Show stack\n");
-	printf("\t5: Look for element in stack\n");
-	printf("\t6: Save stack to file\n");
-	printf("\t7: Load stack from file\n");
-	printf("\t8: Clear stack and stop programme\n");
+	for (int i = 0; i < menuOptionsSize; i++) {
+		printf("%s", menuOptions[i]);
+	}
 	printf("\n\tCURRENT NUMBER OF ELEMENTS ON STACK: %d\n", STACK_capacity());
 	printf("\n\tOption: ");
 }
