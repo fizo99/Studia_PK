@@ -3,8 +3,8 @@
 Należy zaimplementować klasę reprezentującą macierz elementów double.
 Klasa ma mieć następujące metody:
 
-1.  Dwa konstruktory:
-   [x]  przyjmujący dwa argumenty
+1. [x] Dwa konstruktory:
+    przyjmujący dwa argumenty
     typu int tworzący macierz o podanych wymiarach zainicjalizowaną zerami
    [x] przyjmujący jeden argument
     typu int tworzący macierz kwadratową o podanym rozmiarze zainicjalizowaną zerami
