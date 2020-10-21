@@ -50,8 +50,4 @@ int main(int argc, char *argv[]){
 
     char g = 'a',h = 'b';
     test(g,h);
-
-    int arr[5] = {2,1,3,6,4};
-    int arr2[5] = {5,2,3,6,4};
-    test(arr,arr2);
 }
