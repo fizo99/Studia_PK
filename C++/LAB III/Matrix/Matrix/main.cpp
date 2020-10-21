@@ -7,9 +7,6 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
-#define c 10 // columns
-#define r 4	 // rows
-
 void printOutput(const char* message,char sign, Matrix &m1, Matrix &m2, Matrix &result) {
 	std::cout << message << std::endl << std::endl;
 	m1.print();
@@ -19,39 +16,71 @@ void printOutput(const char* message,char sign, Matrix &m1, Matrix &m2, Matrix &
 	result.print();
 }
 
+
 int main()
 {
-
-	Matrix *m = new Matrix(r, c);
-	Matrix *w = new Matrix(r, c);
-	Matrix *k = new Matrix(c, r);
-
 	srand(time(NULL));
-	for (int i = 0; i < r; i++) {
-		for (int j = 0; j < c; j++) {
-			m->set(i,j,(double)(rand() % 10));
-			w->set(i,j,(double)(rand() % 10));
-		}
-	}
-	for (int i = 0; i < c; i++) {
-		for (int j = 0; j < r; j++) {
-			k->set(i, j, (double)(rand() % 10));
-		}
-	}
+	int r = rand() % 10 + 4;
+	int c = rand() % 10 + 4;
 
-	Matrix *add = m->add(*w);
-	Matrix *sub = m->subtract(*w);
-	Matrix *mult = m->multiply(*k);
+	
+	Matrix *m_mult1 = new Matrix(r, c);
+	Matrix *m_mult2 = new Matrix(c, r);
+	Matrix *m_square = new Matrix(r);
+	Matrix *m_file = nullptr;
+	Matrix *add = nullptr;
+	Matrix *sub = nullptr;
+	Matrix *mult = nullptr;
+
 	
 
-	printOutput("ADD:",'+', *m, *w, *add);
-	printOutput("SUBTRACT:",'-', *m, *w, *sub);
-	printOutput("MULTIPLY:",'*', *m, *k, *mult);
+	//2 arg constructor
+	printf("2 arg constructor for rows: %d, cols: %d\n",r,c);
+	m_mult1->print();
+	m_mult1->fillMatrix();
+	m_mult2->fillMatrix();
+	
+	//1 arg constructor and set()
+	printf("1 arg constructor for dim: %d\n", r);
+	m_square->print();
+	printf("Matrix filled with set method:\n");
+	m_square->fillMatrix();
+	m_square->print();
+	int randRow = rand() % r;
+	int randCol = rand() % c;
+	printf("get() for row %d , col %d: %lf\n\n", randRow,randCol,m_square->get(randRow,randCol));
 
-	delete m;
-	delete w;
+	//saving to file
+	printf("Saving the matrix below to file matrix.txt\n");
+	m_square->print();
+	m_square->store("matrix.txt");
+
+	//constructor with file name
+	printf("Constructor with filename 'matrix.txt'\n");
+	m_file = new Matrix("matrix.txt");
+	m_file->print();
+
+	//cols() rows()
+	printf("Method rows() for the matrix from above return value: %d\n", m_file->rows());
+	printf("Method cols() for the matrix from above return value: %d\n\n", m_file->cols());
+
+	
+	m_file->fillMatrix();
+
+	add = m_square->add(*m_file);
+	sub = m_square->subtract(*m_file);
+	mult = m_mult1->multiply(*m_mult2);
+	
+	
+	printOutput("ADDITION:",'+', *m_square, *m_file, *add);
+	printOutput("SUBTRACION:",'-', *m_square, *m_file, *sub);
+	printOutput("MULTIPLICATION:",'*', *m_mult1, *m_mult2, *mult);
+
+	delete m_mult1;
+	delete m_mult2;
+	delete m_square;
+	delete m_file;
 	delete add;
-	delete mult;
 	delete sub;
-
+	delete mult;
 }

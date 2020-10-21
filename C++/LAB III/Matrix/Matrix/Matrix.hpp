@@ -2,13 +2,14 @@
 #include <string>
 
 class Matrix {
-private:
+protected:
 	int row;
 	int col;
 public:
 	double **m1 = nullptr;
 	Matrix(int row, int col);
 	Matrix(int dim);
+	Matrix(std::string path);
 	virtual ~Matrix();
 	void set(int n, int m, double val);
 	double get(int n, int m);
@@ -18,6 +19,7 @@ public:
 	int cols();
 	int rows();
 	void print();
-	void store(std::string filename, std::string path);
-	Matrix(std::string path);
+	void store(std::string filename);
+	//fill matrix with random values
+	void fillMatrix();
 };

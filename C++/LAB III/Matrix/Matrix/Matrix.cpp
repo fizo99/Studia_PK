@@ -2,6 +2,8 @@
 #include "Matrix.hpp"
 #include <iostream>
 #include <iomanip>
+#include <fstream>
+#include <limits>
 
 Matrix::Matrix(int row, int col) {
 	this->m1 = new double*[row];
@@ -9,43 +11,37 @@ Matrix::Matrix(int row, int col) {
 		this->m1[i] = new double[col];
 		std::fill(this->m1[i], this->m1[i] + col, 0);
 	}
-
 	this->row = row;
 	this->col = col;
-	//std::cout << "made: " << m1 << std::endl;
 }
 Matrix::Matrix(int dim) {
 	m1 = new double*[dim];
 	for (int i = 0; i < dim; ++i) {
 		m1[i] = new double[dim];
-		std::fill(m1[i], m1[i] + col, 0);
+		std::fill(m1[i], m1[i] + dim, 0);
 	}
-		
 	this->row = dim;
 	this->col = dim;
 }
+Matrix::Matrix(std::string path) {
+	//TODO error handling
+	std::ifstream MyReadFile(path);
+	MyReadFile >> this->row >> this->col;
+
+	this->m1 = new double*[this->rows()];
+	for (int i = 0; i < this->rows(); ++i)
+		this->m1[i] = new double[this->cols()];
+
+	for (int i = 0; i < this->rows(); i++) {
+		for (int j = 0; j < this->cols(); j++) {
+			MyReadFile >> this->m1[i][j];
+		}
+	}
+}
 Matrix::~Matrix() {
-	//std::cout << "deleting " << this->m1 << std::endl;
 	for (int i = 0; i < rows(); ++i)
 		delete[] m1[i];
 	delete[] m1;
-}
-Matrix* Matrix::add(Matrix &m2) {
-	int n = m2.rows();
-	int m = m2.cols();
-	if (n != rows() || m != cols()) {
-		std::cout << "Matricies have different sizes" << std::endl;
-		return NULL;
-	}
-
-	Matrix *newMatrix = new Matrix(n, m);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			double val = this->get(i, j) + m2.get(i, j);
-			newMatrix->set(i, j, val);
-		}
-	}
-	return newMatrix;
 }
 void Matrix::set(int n, int m, double val) {
 	if (n < rows() && n >= 0 && m < cols() && m >= 0)
@@ -58,7 +54,7 @@ double Matrix::get(int n, int m) {
 		return m1[n][m];
 	else {
 		std::cout << "Wrong index number" << std::endl;
-		return NULL;
+		return std::numeric_limits<double>::max();
 	}
 }
 Matrix* Matrix::subtract(Matrix &m2) {
@@ -66,7 +62,7 @@ Matrix* Matrix::subtract(Matrix &m2) {
 	int m = m2.cols();
 	if (n != rows() || m != cols()) {
 		std::cout << "Matricies have different sizes" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	Matrix *newMatrix = new Matrix(n, m);
@@ -84,7 +80,7 @@ Matrix* Matrix::multiply(Matrix &m2) {
 
 	if (cols() != n) {
 		std::cout << "First matrix number of columns doesn`t equals second matrix number of rows" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	Matrix *newMatrix = new Matrix(this->rows(), m);
@@ -98,6 +94,23 @@ Matrix* Matrix::multiply(Matrix &m2) {
 				sum += this->get(i, k) * m2.get(k, j);
 			}
 			newMatrix->set(i, j, sum);
+		}
+	}
+	return newMatrix;
+}
+Matrix* Matrix::add(Matrix &m2) {
+	int n = m2.rows();
+	int m = m2.cols();
+	if (n != rows() || m != cols()) {
+		std::cout << "Matricies have different sizes" << std::endl;
+		return nullptr;
+	}
+
+	Matrix *newMatrix = new Matrix(n, m);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			double val = this->get(i, j) + m2.get(i, j);
+			newMatrix->set(i, j, val);
 		}
 	}
 	return newMatrix;
@@ -117,9 +130,28 @@ void Matrix::print() {
 	}
 	std::cout << std::endl;
 }
-void Matrix::store(std::string filename, std::string path) {
-
+void Matrix::store(std::string filename) {
+	std::ofstream outfile;
+	outfile.open(filename, std::ofstream::out);
+	if (outfile.is_open()) {
+		outfile << this->rows() << " " << this->cols() << std::endl;
+		for (int i = 0; i < rows(); i++) {
+			for (int j = 0; j < cols(); j++) {
+				outfile << get(i, j) << " ";
+			}
+			outfile << std::endl;
+		}
+		outfile.close();
+	}else{
+		std::cout << "Error opening file" << std::endl;
+	}
 }
-Matrix::Matrix(std::string path) {
-
+void Matrix::fillMatrix() {
+	int row = this->rows();
+	int col = this->cols();
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
+			this->set(i, j, (double)(rand() % 10));
+		}
+	}
 }
