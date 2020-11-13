@@ -1,7 +1,6 @@
 ﻿#include <array>
 #include <mutex>
 #include <thread>
-#include <atomic>
 #include <chrono>
 #include <iostream>
 #include <queue>
