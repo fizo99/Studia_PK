@@ -2,5 +2,7 @@
 *.txt
 *.bin
 C++/old
+C++/wk
 Java
 Python
+bash
