@@ -32,37 +32,37 @@ int main()
 	Matrix *sub = nullptr;
 	Matrix *mult = nullptr;
 
-	
+	//
 
-	//2 arg constructor
-	printf("2 arg constructor for rows: %d, cols: %d\n",r,c);
+	////2 arg constructor
+	printf("Matrix(int rows, int cols) rows: %d, cols: %d\n",r,c);
 	m_mult1->print();
 	m_mult1->fillMatrix();
 	m_mult2->fillMatrix();
-	
+	//
 	//1 arg constructor and set()
-	printf("1 arg constructor for dim: %d\n", r);
+	printf("Matrix(int dim) dim: %d\n", r);
 	m_square->print();
-	printf("Matrix filled with set method:\n");
+	printf("Matrix filled with set(int n, int m, double val) method:\n");
 	m_square->fillMatrix();
 	m_square->print();
 	int randRow = rand() % r;
 	int randCol = rand() % c;
-	printf("get() for row %d , col %d: %lf\n\n", randRow,randCol,m_square->get(randRow,randCol));
+	printf("get(int row, int col) row %d , col %d: %lf\n\n", randRow,randCol,m_square->get(randRow,randCol));
 
 	//saving to file
-	printf("Saving the matrix below to file matrix.txt\n");
+	printf("store(string filename) filename: matrix.txt\n");
 	m_square->print();
 	m_square->store("matrix.txt");
 
 	//constructor with file name
-	printf("Constructor with filename 'matrix.txt'\n");
+	printf("Matrix(string filename) filename: \"matrix.txt\"\n");
 	m_file = new Matrix("matrix.txt");
 	m_file->print();
 
 	//cols() rows()
-	printf("Method rows() for the matrix from above return value: %d\n", m_file->rows());
-	printf("Method cols() for the matrix from above return value: %d\n\n", m_file->cols());
+	printf("rows() for the matrix from above return value: %d\n", m_file->rows());
+	printf("cols() for the matrix from above return value: %d\n\n", m_file->cols());
 
 	
 	m_file->fillMatrix();

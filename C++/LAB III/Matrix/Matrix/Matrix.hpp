@@ -5,21 +5,21 @@ class Matrix {
 protected:
 	int row;
 	int col;
-public:
 	double **m1 = nullptr;
+public:
 	Matrix(int row, int col);
 	Matrix(int dim);
-	Matrix(std::string path);
+	Matrix(const std::string path);
 	virtual ~Matrix();
 	void set(int n, int m, double val);
-	double get(int n, int m);
-	Matrix* add(Matrix &m2);
-	Matrix* subtract(Matrix &m2);
-	Matrix* multiply(Matrix &m2);
-	int cols();
-	int rows();
-	void print();
-	void store(std::string filename);
+	double get(int n, int m) const;
+	Matrix* add(const Matrix &m2) const;
+	Matrix* subtract(const Matrix &m2) const;
+	Matrix* multiply(const Matrix &m2) const;
+	int cols() const;
+	int rows() const;
+	void print() const;
+	void store(const std::string filename) const;
 	//fill matrix with random values
 	void fillMatrix();
 };
