@@ -47,7 +47,7 @@ int main()
 	m_square->fillMatrix();
 	m_square->print();
 	int randRow = rand() % r;
-	int randCol = rand() % c;
+	int randCol = rand() % r;
 	printf("get(int row, int col) row %d , col %d: %lf\n\n", randRow,randCol,m_square->get(randRow,randCol));
 
 	//saving to file
