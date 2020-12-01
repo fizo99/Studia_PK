@@ -153,9 +153,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.hpp" />
+    <ClInclude Include="sqlite3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

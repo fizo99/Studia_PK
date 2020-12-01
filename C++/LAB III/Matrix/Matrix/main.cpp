@@ -14,60 +14,89 @@ void printOutput(const char *message, char sign, Matrix &m1, Matrix &m2,
 }
 
 int main() {
-  int r = 8;
-  int c = 5;
 
-  ////2 arg constructor
-  printf("Matrix(int rows, int cols) rows: %d, cols: %d\n", r, c);
-  Matrix matrixOne(r, c);
-  matrixOne.print();
-  // 1 arg constructor
-  printf("Matrix(int dim) dim: %d\n", r);
-  Matrix matrixSquare(r);
-  matrixSquare.print();
+	//Matrix m(2,3);
+	//m.fillMatrix();
+	//m.print();
+	//m.saveToDB();
+	//m.loadFromDB();
 
-  // set()
-  printf("Matrix filled with set(int n, int m, double val) method:\n");
-  matrixOne.fillMatrix();
-  matrixOne.print();
+	//Matrix m(2, 3);
+	//m.fill_matrix();
+	//m.print();
+	try {
+		//m.save_to_db("test.db");
+		//Matrix *n = Matrix::load_one("test.db", 2);
+		//n->print();
+		std::vector<Matrix*>* all = Matrix::load_all("test.db");
+		for (const Matrix *m : *all) {
+			m->print();
+		}
 
-  // get()
-  printf("get(int row, int col) row %d , col %d: %lf\n\n", 2, 4,
-         matrixOne.get(2, 4));
+	}
+	catch (std::exception &e) {
+		std::cout << e.what();
+	}
+	catch (const char *msg) {
+		std::cout << msg;
+	}
 
-  // saving to file
-  printf("Below matrix stored in file matrix.txt\nstore(string filename) "
-         "filename: matrix.txt\n");
-  matrixOne.print();
-  matrixOne.store("matrix.txt");
 
-  // constructor with file name
-  printf("Below matrix loaded from file matrix.txt\nMatrix(string filename) "
-         "filename: "
-         "\"matrix.txt\"\n");
-  Matrix matrixFile("matrix.txt");
-  matrixFile.print();
 
-  // cols() rows()
-  printf("rows() for the matrix from above return value: %d\n",
-         matrixFile.rows());
-  printf("cols() for the matrix from above return value: %d\n\n",
-         matrixFile.cols());
+  //int r = 8;
+  //int c = 5;
 
-  Matrix matrixTwo(r, c);
-  Matrix matrixToMult(c, r + 2);
-  matrixTwo.fillMatrix();
-  matrixToMult.fillMatrix();
+  //////2 arg constructor
+  //printf("Matrix(int rows, int cols) rows: %d, cols: %d\n", r, c);
+  //Matrix matrixOne(r, c);
+  //matrixOne.print();
+  //// 1 arg constructor
+  //printf("Matrix(int dim) dim: %d\n", r);
+  //Matrix matrixSquare(r);
+  //matrixSquare.print();
 
-  Matrix *addMatrix = matrixOne.add(matrixTwo);
-  Matrix *subMatrix = matrixOne.subtract(matrixTwo);
-  Matrix *multMatrix = matrixOne.multiply(matrixToMult);
+  //// set()
+  //printf("Matrix filled with set(int n, int m, double val) method:\n");
+  //matrixOne.fillMatrix();
+  //matrixOne.print();
 
-  printOutput("ADDITION:", '+', matrixOne, matrixTwo, *addMatrix);
-  printOutput("SUBTRACION:", '-', matrixOne, matrixTwo, *subMatrix);
-  printOutput("MULTIPLICATION:", '*', matrixOne, matrixToMult, *multMatrix);
+  //// get()
+  //printf("get(int row, int col) row %d , col %d: %lf\n\n", 2, 4,
+  //       matrixOne.get(2, 4));
 
-  delete addMatrix;
-  delete subMatrix;
-  delete multMatrix;
+  //// saving to file
+  //printf("Below matrix stored in file matrix.txt\nstore(string filename) "
+  //       "filename: matrix.txt\n");
+  //matrixOne.print();
+  //matrixOne.store("matrix.txt");
+
+  //// constructor with file name
+  //printf("Below matrix loaded from file matrix.txt\nMatrix(string filename) "
+  //       "filename: "
+  //       "\"matrix.txt\"\n");
+  //Matrix matrixFile("matrix.txt");
+  //matrixFile.print();
+
+  //// cols() rows()
+  //printf("rows() for the matrix from above return value: %d\n",
+  //       matrixFile.rows());
+  //printf("cols() for the matrix from above return value: %d\n\n",
+  //       matrixFile.cols());
+
+  //Matrix matrixTwo(r, c);
+  //Matrix matrixToMult(c, r + 2);
+  //matrixTwo.fillMatrix();
+  //matrixToMult.fillMatrix();
+
+  //Matrix *addMatrix = matrixOne.add(matrixTwo);
+  //Matrix *subMatrix = matrixOne.subtract(matrixTwo);
+  //Matrix *multMatrix = matrixOne.multiply(matrixToMult);
+
+  //printOutput("ADDITION:", '+', matrixOne, matrixTwo, *addMatrix);
+  //printOutput("SUBTRACION:", '-', matrixOne, matrixTwo, *subMatrix);
+  //printOutput("MULTIPLICATION:", '*', matrixOne, matrixToMult, *multMatrix);
+
+  //delete addMatrix;
+  //delete subMatrix;
+  //delete multMatrix;
 }
