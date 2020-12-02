@@ -29,3 +29,6 @@ Klasa ma mieć następujące metody:
     jako argument przyjmujący ścieżkę do pliku o podanym wcześniej formacie i na jego podstawie tworzący nową macierz na podstawie przekazanego pliku
 12. [x] metoda main
     pokazującą działanie wszystkich powyższych metod na przykładzie macierzy o rozmiarze co najmniej 4 (należy zademonstrować działanie wszystkich konstruktorów).
+
+
+*02.12.2020 dodano obsługę wyjątków oraz zapisu/wczytywania z bazy*

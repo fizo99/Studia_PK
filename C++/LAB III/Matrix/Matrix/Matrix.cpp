@@ -233,11 +233,10 @@ Matrix* Matrix::load_one(const char * db_name,int id) noexcept(false) {
 	int cols = sqlite3_column_int(stmt, 2);
 	double *matrix = (double*)sqlite3_column_blob(stmt, 3);
 
-	rc = sqlite3_finalize(stmt);
-	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
-
 	Matrix *loaded_matrix = new Matrix(rows, cols, matrix);
 
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 	rc = sqlite3_close(db);
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 
