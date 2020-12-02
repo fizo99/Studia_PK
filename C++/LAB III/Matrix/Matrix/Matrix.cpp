@@ -1,14 +1,14 @@
 #pragma once
+#pragma warning(disable:4996)
+
 #include "Matrix.hpp"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <limits>
 #include "sqlite3.h"
-#pragma warning(disable:4996)
 
-
-namespace MyExceptions {
+namespace my_exceptions {
 	class wrong_index : public std::exception
 	{
 		virtual const char *what() const throw()
@@ -27,14 +27,7 @@ namespace MyExceptions {
 	{
 		virtual const char *what() const throw()
 		{
-			return "wrong matrix size";
-		}
-	};
-	class db_open_fail : public std::exception
-	{
-		virtual const char *what() const throw()
-		{
-			return "wrong matrix size";
+			return "file opening failed";
 		}
 	};
 }
@@ -58,7 +51,6 @@ Matrix::Matrix(int row, int col,const double *values) {
 			this->m1[i][j] = values[j + i * col];
 		}
 	}
-	//delete values;
 	this->row = row;
 	this->col = col;
 }
@@ -72,9 +64,9 @@ Matrix::Matrix(int dim) {
 	this->col = dim;
 }
 Matrix::Matrix(const std::string path) noexcept(false) {
-	std::ifstream MyReadFile(path);
-	if (MyReadFile.is_open()) {
-		MyReadFile >> this->row >> this->col;
+	std::ifstream read_file(path);
+	if (read_file.is_open()) {
+		read_file >> this->row >> this->col;
 
 		this->m1 = new double*[this->rows()];
 		for (int i = 0; i < this->rows(); ++i)
@@ -82,72 +74,73 @@ Matrix::Matrix(const std::string path) noexcept(false) {
 
 		for (int i = 0; i < this->rows(); i++) {
 			for (int j = 0; j < this->cols(); j++) {
-				MyReadFile >> this->m1[i][j];
+				read_file >> this->m1[i][j];
 			}
 		}
 	}
 	else {
-		throw MyExceptions::file_open_fail();
+		throw my_exceptions::file_open_fail();
 	}
 
 }
 Matrix::~Matrix()  {
 	for (int i = 0; i < rows(); ++i) {
-		if (m1[i] == nullptr) 
 		delete[] m1[i];
 	}
 	delete[] m1;
 }
+
 void Matrix::set(int n, int m, double val) noexcept(false) {
 	if (n < rows() && n >= 0 && m < cols() && m >= 0)
 		m1[n][m] = val;
 	else
-		throw MyExceptions::wrong_index();
+		throw my_exceptions::wrong_index();
 }
 double Matrix::get(int n, int m) const {
 	if (n < rows() && n >= 0 && m < cols() && m >= 0)
-	{
 		return this->m1[n][m];
-	}
-	else {
-		throw MyExceptions::wrong_index();
-	}
+	else 
+		throw my_exceptions::wrong_index();
 }
+
 Matrix* Matrix::add(const Matrix &m2) const noexcept(false) {
 	int n = m2.rows();
 	int m = m2.cols();
-	if (n != this->rows() || m != this->cols()) throw MyExceptions::wrong_matrix_size();
+	if (n != this->rows() || m != this->cols()) 
+		throw my_exceptions::wrong_matrix_size();
 
-	Matrix *newMatrix = new Matrix(n, m);
+	Matrix *new_matrix = new Matrix(n, m);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			double val = this->get(i, j) + m2.get(i, j);
-			newMatrix->set(i, j, val);
+			new_matrix->set(i, j, val);
 		}
 	}
-	return newMatrix;
+	return new_matrix;
 }
 Matrix* Matrix::subtract(const Matrix &m2) const noexcept(false) {
 	int n = m2.rows();
 	int m = m2.cols();
-	if (n != this->rows() || m != this->cols()) throw MyExceptions::wrong_matrix_size();
+	if (n != this->rows() || m != this->cols()) 
+		throw my_exceptions::wrong_matrix_size();
 
-	Matrix *newMatrix = new Matrix(n, m);
+	Matrix *new_matrix = new Matrix(n, m);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			double val = this->get(i, j) - m2.get(i, j);
-			newMatrix->set(i, j, val);
+			new_matrix->set(i, j, val);
 		}
 	}
-	return newMatrix;
+	return new_matrix;
 }
 Matrix* Matrix::multiply(const Matrix &m2) const{
 	int m = m2.cols();
 	int n = m2.rows();
 
-	if (this->cols() != n) throw MyExceptions::wrong_matrix_size();
+	if (this->cols() != n) 
+		throw my_exceptions::wrong_matrix_size();
 
-	Matrix *newMatrix = new Matrix(this->rows(), m);
+	Matrix *new_matrix = new Matrix(this->rows(), m);
 	//m1 NxM m2 MxK
 
 	double sum = 0;
@@ -157,10 +150,10 @@ Matrix* Matrix::multiply(const Matrix &m2) const{
 			for (int k = 0; k < this->cols(); k++) {
 				sum += this->get(i, k) * m2.get(k, j);
 			}
-			newMatrix->set(i, j, sum);
+			new_matrix->set(i, j, sum);
 		}
 	}
-	return newMatrix;
+	return new_matrix;
 }
 
 int Matrix::cols() const {
@@ -178,11 +171,31 @@ void Matrix::print() const {
 	}
 	std::cout << std::endl;
 }
+void Matrix::fill_matrix() {
+	for (int i = 0; i < this->rows(); i++) {
+		for (int j = 0; j < this->cols(); j++) {
+			this->set(i, j, (double)(rand() % 10));
+		}
+	}
+}
+double* Matrix::to_vector() const noexcept(false) {
+	if (this == nullptr || this->m1 == nullptr) throw "Empty matrix";
+	double *copy = new double[this->rows() * this->cols()];
+	int it = 0;
+	for (int i = 0; i < this->rows(); i++) {
+		for (int j = 0; j < this->cols(); j++) {
+			copy[it] = this->get(i, j);
+			it++;
+		}
+	}
+	return copy;
+}
+
 void Matrix::store(const std::string filename) const noexcept(false) {
 	int rows = this->rows();
 	int cols = this->cols();
 
-	std::ofstream outfile;
+	std::ofstream outfile(filename);
 	if (outfile.is_open()) {
 		outfile << rows << " " << cols << std::endl;
 		for (int i = 0; i < rows; i++) {
@@ -193,7 +206,7 @@ void Matrix::store(const std::string filename) const noexcept(false) {
 		}
 		outfile.close();
 	}else{
-		throw MyExceptions::file_open_fail();
+		throw my_exceptions::file_open_fail();
 	}
 }
 
@@ -203,7 +216,7 @@ Matrix* Matrix::load_one(const char * db_name,int id) noexcept(false) {
 	char *zErrMsg = 0;
 	int rc;
 
-	rc = sqlite3_open(db_name, &db);
+	rc = sqlite3_open_v2(db_name, &db, SQLITE_OPEN_READONLY, NULL);
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 
 	char sql[50];
@@ -213,13 +226,12 @@ Matrix* Matrix::load_one(const char * db_name,int id) noexcept(false) {
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 
 	rc = sqlite3_step(stmt);
-	if (rc != SQLITE_ROW) throw sqlite3_errmsg(db);
+	if (rc != SQLITE_ROW) throw "No matrix with given id";//sqlite3_errmsg(db);
 
 	//int id = sqlite3_column_int(stmt, 0);
 	int rows = sqlite3_column_int(stmt, 1);
 	int cols = sqlite3_column_int(stmt, 2);
 	double *matrix = (double*)sqlite3_column_blob(stmt, 3);
-
 
 	rc = sqlite3_finalize(stmt);
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
@@ -230,17 +242,6 @@ Matrix* Matrix::load_one(const char * db_name,int id) noexcept(false) {
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 
 	return loaded_matrix;
-	//while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-	//	int id = sqlite3_column_int(stmt, 0);
-	//	int rows = sqlite3_column_int(stmt, 1);
-	//	int cols = sqlite3_column_int(stmt, 2);
-	//	double *matrix = (double*)sqlite3_column_blob(stmt,3);
-	//	for (int i = 0; i < rows*cols; i++) {
-	//		std::cout << matrix[i] << " ";
-	//	}
-	//	printf("\n%d,%d,%d", id, rows, cols);
-	//	// ...
-	//}
 }
 std::vector<Matrix*>* Matrix::load_all(const char * db_name) noexcept(false) {
 	sqlite3 *db = nullptr;
@@ -249,7 +250,7 @@ std::vector<Matrix*>* Matrix::load_all(const char * db_name) noexcept(false) {
 	char *zErrMsg = 0;
 	int rc;
 
-	rc = sqlite3_open(db_name, &db);
+	rc = sqlite3_open_v2(db_name, &db, SQLITE_OPEN_READONLY, NULL);
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 
 	const char *sql = "SELECT * FROM MATRIX";
@@ -275,6 +276,10 @@ std::vector<Matrix*>* Matrix::load_all(const char * db_name) noexcept(false) {
 
 
 void Matrix::save_to_db(const char *db_name) const noexcept(false) {
+	//copy of array to make blob from it
+	double *copy = to_vector();
+	if (copy == nullptr) return;
+
 	sqlite3 *db = nullptr;
 	sqlite3_stmt *stmt = nullptr;
 	char *zErrMsg = 0;
@@ -292,7 +297,7 @@ void Matrix::save_to_db(const char *db_name) const noexcept(false) {
 		" VALUES(?1, ?2, ?3)";
 
 
-	rc = sqlite3_open(db_name, &db);
+	rc = sqlite3_open_v2(db_name, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 
 	rc = sqlite3_exec(db, create, NULL, 0, &zErrMsg);
@@ -300,16 +305,7 @@ void Matrix::save_to_db(const char *db_name) const noexcept(false) {
 	
 	rc = sqlite3_prepare(db,insert,-1, &stmt, NULL);
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
-	
-	//copy of array to make blob from it
-	double *copy = new double[this->rows() * this->cols()];
-	int it = 0;
-	for (int i = 0; i < this->rows(); i++) {
-		for (int j = 0; j < this->cols(); j++) {
-			copy[it] = this->get(i, j);
-			it++;
-		}
-	}
+
 	rc = sqlite3_bind_int(stmt, 1, this->rows());
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 	rc = sqlite3_bind_int(stmt, 2, this->cols());
@@ -326,50 +322,5 @@ void Matrix::save_to_db(const char *db_name) const noexcept(false) {
 	rc = sqlite3_close(db);
 	if (rc != SQLITE_OK) throw sqlite3_errmsg(db);
 
-
-
-	//sqlite3 *db;
-	//char *zErrMsg = 0;
-	//int rc;
-
-	//rc = sqlite3_open("test.db", &db);
-
-	//if (rc) {
-	//	throw MyExceptions::file_open_fail();
-	//}
-
-	//const char *create = "CREATE TABLE MATRIX("  \
-	//	"ID INT PRIMARY KEY     NOT NULL," \
-	//	"ROWS           INT     NOT NULL," \
-	//	"COLS           INT     NOT NULL);";
-	//rc = sqlite3_exec(db, create, NULL, 0, &zErrMsg);
-	//if (rc != SQLITE_OK) {
-	//	fprintf(stderr, "SQL error: %s\n", zErrMsg);
-	//	sqlite3_free(zErrMsg);
-	//}
-	//else {
-	//	fprintf(stdout, "Table created successfully\n");
-	//}
-
-	//std::cout << (res == true ? "success" : "fail");
-	//const char *insert = "INSERT INTO MATRIX("  \
-	//	"ID, ROWS, COLS)"\
-	//	"VALUES(0,2,3);";
-
-	//rc = sqlite3_exec(db, insert, NULL, 0, &zErrMsg);
-	//if (rc != SQLITE_OK) {
-	//	fprintf(stderr, "SQL error: %s\n", zErrMsg);
-	//	sqlite3_free(zErrMsg);
-	//}
-	//else {
-	//	fprintf(stdout, "Table created successfully\n");
-	//}
-	//sqlite3_close(db);
-}
-void Matrix::fill_matrix() {
-	for (int i = 0; i < this->rows(); i++) {
-		for (int j = 0; j < this->cols(); j++) {
-			this->set(i, j, (double)(rand() % 10));
-		}
-	}
+	delete copy;
 }
