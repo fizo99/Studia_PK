@@ -9,7 +9,9 @@ set (CMAKE_CXX_STANDARD 11)
 
 file(GLOB SRC
 	"./src/*.cpp"
+	"./src/*.c"
 	"./src/*.hpp"
+	"./src/*.h"
 )
 
 add_executable(MATRIX ${SRC})
