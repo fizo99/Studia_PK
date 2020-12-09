@@ -14,7 +14,7 @@ file(GLOB SRC
 	"./src/*.h"
 )
 
-add_executable(MATRIX ${SRC})
-include_directories( ./include/Matrix )
+add_executable(MATRIX ${SRC} ./libs/sqlite/src/sqlite3.c )
+include_directories( ./include/Matrix ./libs/sqlite/include )
 
 #add_executable(MATRIX ./src/main.cpp ./src/Matrix.cpp )
