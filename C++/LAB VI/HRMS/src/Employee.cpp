@@ -11,16 +11,32 @@ Employee::Employee(string _department_id,string _name, string _surname, string _
     this->position = _position;
     this->id = uuid::generate_uuid();
 }
+Employee::Employee()
+{
+  
+}
 
 void Employee::showYourself() 
 {
     cout << this->name << " " << this->department_id << " " << this->surname << " " << this->position << " " << this->id << "\n";
 }
+string Employee::get_name()
+{
+  return this->name;
+}
+string Employee::get_surname()
+{
+  return this->surname;
+}
+string Employee::get_department_id()
+{
+  return this->department_id;
+}
+string Employee::get_position()
+{
+  return this->position;
+}
 string Employee::get_id() 
 {
-  char buffer[255];
-  std::size_t length = this->id.copy(buffer,this->id.length(),0);
-  buffer[length]='\0';
-
-  return string(buffer);
+  return this->id;
 }

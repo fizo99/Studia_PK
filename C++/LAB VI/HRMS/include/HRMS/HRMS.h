@@ -18,12 +18,13 @@ using std::cout;
 class HRMS 
 {
 private:
-    vector<Employee> employees;
+    //vector<Employee> employees;
+    map<string,Employee> employees_map;
     map<string,vector<string>> departments;
     map<string,double> salaries;
 public:
     HRMS(void);
-    void add(Employee employee, string department_id, double salary) noexcept(false);
+    void add(Employee& employee, string department_id, double salary) noexcept(false);
     void print_department(string department_id) noexcept;
     void change_salary(string employee_id, double salary) noexcept(false);
     void print_salaries() noexcept;

@@ -1,20 +1,16 @@
 #include "HRMS.h"
 
-bool cmp(pair<string, double>& a, pair<string, double>& b) 
-{ 
-    return a.second > b.second; 
-} 
-
 HRMS::HRMS()
 {
 
 }
 
-void HRMS::add(Employee employee, string department_id, double salary) noexcept(false)
+void HRMS::add(Employee& employee, string department_id, double salary) noexcept(false)
 {
     string employee_id = employee.get_id();
-
-    this->employees.push_back(employee);
+    //this->employees.push_back(employee);
+    
+    this->employees_map[employee_id] = employee;
     this->departments[department_id].push_back(employee_id);
     this->salaries[employee_id] = salary;
 }
@@ -34,23 +30,50 @@ void HRMS::change_salary(string employee_id, double salary) noexcept(false)
 void HRMS::print_salaries() noexcept
 {
     cout << "Salaries\n";
-    for (auto &s : this->salaries)
+    // for (auto &s : this->employees)
+    // {
+    //     auto id = s.get_id();
+    //     cout << "ID: " << id << "\n";
+    //     cout << "Name: " << s.get_name() << "\n";
+    //     cout << "Surname: " << s.get_surname() << "\n";
+    //     cout << "Department ID: " << s.get_department_id() << "\n";
+    //     cout << "Position: " << s.get_position() << "\n";
+    //     cout << "Salary: " << this->salaries[id]<< "$\n";
+    // }
+    for (auto &s : this->employees_map)
     {
-        cout << s.first << " : " << s.second << "$\n";
+        Employee& e = s.second;
+        cout << "ID: " << e.get_id() << "\n";
+        cout << "Name: " << e.get_name() << "\n";
+        cout << "Surname: " << e.get_surname() << "\n";
+        cout << "Department ID: " << e.get_department_id() << "\n";
+        cout << "Position: " << e.get_position() << "\n";
+        cout << "Salary: " << this->salaries[e.get_id()]<< "$\n\n";
     }
+    
 }
 void HRMS::print_salaries_sorted() noexcept
 {
     cout << "Salaries sorted\n";
-    vector<pair<string, double>> sorted; 
+    vector<pair<Employee, double>> sorted; 
   
-    for (auto& s : this->salaries) { 
-        sorted.push_back(s); 
+    for (auto& s : this->employees_map) { 
+        Employee& e = s.second;
+        sorted.push_back( { e,this->salaries[e.get_id()] }); 
     } 
   
-    std::sort(sorted.begin(), sorted.end(), cmp); 
+    std::sort(sorted.begin(), sorted.end(), [](pair<Employee, double>& a, pair<Employee, double>& b) {
+        return a.second > b.second;
+    }); 
   
-    for (auto& s : sorted) { 
-        cout << s.first << " : " << s.second << "$\n";
-    } 
+    for (auto &s : sorted)
+    {
+        Employee& e = s.first;
+        cout << "ID: " << e.get_id() << "\n";
+        cout << "Name: " << e.get_name() << "\n";
+        cout << "Surname: " << e.get_surname() << "\n";
+        cout << "Department ID: " << e.get_department_id() << "\n";
+        cout << "Position: " << e.get_position() << "\n";
+        cout << "Salary: " << s.second << "$\n\n";
+    }
 }
