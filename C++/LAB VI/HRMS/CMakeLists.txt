@@ -5,7 +5,7 @@ set (CMAKE_CXX_STANDARD 11)
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=lstdc++")	#compiler flags
 #set (CMAKE_C_COMPILER clang)					#set compiler for C
 #set (CMAKE_CXX_COMPILER clang++)				#set compiler for C++
-#set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)	#set destination of .exe files
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY .. )	#set destination of .exe files
 
 file(GLOB SRC
 	"./src/*.c"
