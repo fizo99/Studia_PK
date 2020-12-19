@@ -9,6 +9,7 @@
 
 using std::vector;
 using std::map;
+using std::multimap;
 using std::string;
 using std::pair;
 using std::cout;
@@ -29,5 +30,4 @@ public:
     void change_salary(string employee_id, double salary) noexcept(false);
     void print_salaries() noexcept;
     void print_salaries_sorted() noexcept;
-
 };

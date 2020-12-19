@@ -2,21 +2,38 @@
 #include <iostream>
 #include "HRMS.h"
 #include "Employee.h"
+#include <ctime>
 
 using std::cout;
 
 int main() {
-    Employee e("abc","name","surname","pos");
-    Employee b("bbc","dsdd","dsd","112");
-    Employee c("bbc","dsdd","dsd","112");
-    Employee d("bbc","dsdd","dsd","112");
+    vector<string> deps{
+        "Departament I","Departament II", "Departament III"
+    };
+    vector<Employee> emps{
+        {"Jakub","Matczak","Cleaner"},
+        {"Wojciech","Nowak","Java Developer"},
+        {"Jan","Kowalski","Java Developer"},
+        {"Tomasz","Mazowiecki","C++ Developer"},
+        {"Roman","Nowacki","Frontend Developer"},
+        {"Mateusz","Gola","Senior Java Developer"},
+        {"Wojciech","Mura","Principal Java Developer"},
+        {"Wojciech","Mazur","DevOps Engineer"},
+        {"Jakub","Kalida","Junior DevOps Engineer"},
+        {"Artur","Halat","Intern"},
+    };
     HRMS hr;
-    hr.add(e,"dep",2000.0);
-    hr.add(b,"dep",3000.0);
-    hr.add(d,"dep",23000.0);
-    hr.add(c,"dep",300330.0);
+    std::srand(std::time(nullptr));
+    int it;
+    double salary;
+    for(auto &e: emps)
+    {
+        it = std::rand()/((RAND_MAX)/2);
+        salary = (double) std::rand();
+        hr.add(e,deps.at(it) , salary);
+    }
 
-    hr.print_department("dep");
+    hr.print_department(deps.at(0));
     hr.print_salaries();
     hr.print_salaries_sorted();
 }
