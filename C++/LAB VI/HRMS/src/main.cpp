@@ -7,7 +7,8 @@
 using std::cout;
 
 int main() {
-    vector<string> deps{
+    HRMS hr;
+    const vector<string> deps{
         "Departament I","Departament II", "Departament III"
     };
     vector<Employee> emps{
@@ -22,13 +23,13 @@ int main() {
         {"Jakub","Kalida","Junior DevOps Engineer"},
         {"Artur","Halat","Intern"},
     };
-    HRMS hr;
+    
     std::srand(std::time(nullptr));
     int it;
     double salary;
     for(auto &e: emps)
     {
-        it = std::rand()/((RAND_MAX)/2);
+        it = std::rand()/((RAND_MAX)/3);
         salary = (double) std::rand();
         hr.add(e,deps.at(it) , salary);
     }
