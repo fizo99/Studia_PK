@@ -1,14 +1,14 @@
-﻿
+﻿#include <ctime>
 #include <iostream>
+
 #include "HRMS.h"
 #include "Employee.h"
-#include <ctime>
 
 using std::cout;
 
 int main() {
     HRMS hr;
-    const vector<string> deps{
+    vector<string> deps{
         "Departament I","Departament II", "Departament III"
     };
     vector<Employee> emps{
@@ -31,10 +31,26 @@ int main() {
     {
         it = std::rand()/((RAND_MAX)/3);
         salary = (double) std::rand();
-        hr.add(e,deps.at(it) , salary);
+
+        try
+        {
+            hr.add(e,deps.at(it),salary);
+        }
+        catch(string& comm)
+        {
+            cout << comm;
+        }
     }
 
-    hr.print_department(deps.at(0));
+    try
+    {
+        hr.print_department(deps.at(0));
+    }
+    catch(string& comm)
+    {
+        cout << comm;
+    }
+
     hr.print_salaries();
     hr.print_salaries_sorted();
 }
