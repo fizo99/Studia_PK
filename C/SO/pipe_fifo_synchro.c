@@ -33,20 +33,20 @@ char * translateToDay(int day){
     }
 }
 
-//watek traktowany jest jak "plik" do ktorego mozna zapisywac/ odczytywac z niego
+//proces traktowany jest jak "plik" do ktorego mozna zapisywac/ odczytywac z niego
 
-//close(0) -> zamkniecie deskryptora czytania dla watku (watek nie bedzie czytal ze stdin)
-//close(1) -> zamkniecie deskryptora pisania dla watku (watek nie bedzie pisal na stdout)
+//close(0) -> zamkniecie deskryptora czytania dla procesu (proces nie bedzie czytal ze stdin)
+//close(1) -> zamkniecie deskryptora pisania dla procesu (proces nie bedzie pisal na stdout)
 
 //oznaczenia:
-// A -> watek macierzysty
-// B -> watek potomny A
-// C -> watek potomny B
+// A -> proces macierzysty
+// B -> proces potomny A
+// C -> proces potomny B
 
-// watki macierzyste zanim wykonaja swoje operacje
-// beda czekac az watki potomne cos zapisza do potoku(pipe) lub kolejki(fifo)
-// 1. C czyta od uzytkownika dane i zapisuje je do FIFO(fifo jest stworzone przez watek B)
-// 2. B czyta dane z FIFO, konwertuje je na odpowiedni format i czesc z nich(rok) zapisuje do PIPE(pipe stworzone przez watek A)
+// procesy macierzyste zanim wykonaja swoje operacje
+// beda czekac az procesy potomne cos zapisza do potoku(pipe) lub kolejki(fifo)
+// 1. C czyta od uzytkownika dane i zapisuje je do FIFO(fifo jest stworzone przez proces B)
+// 2. B czyta dane z FIFO, konwertuje je na odpowiedni format i czesc z nich(rok) zapisuje do PIPE(pipe stworzone przez proces A)
 // 3. A czyta dane z PIPE i je wypisuje
 
 int main() {
@@ -62,11 +62,11 @@ int main() {
     printf("liczba sekund dla dzis: %ld\n",s);
 
     switch(fork()){
-        //blad tworzenia watku
+        //blad tworzenia procesu
         case -1:
             fprintf(stderr,"error");
             exit(1);
-        //nowy watek
+        //nowy proces
         case 0:
             //stworzenie fifo (specjalny plik do zapisu/odczytu)
             if (mkfifo("./fifoFIFO", 0777) == -1)
@@ -124,7 +124,7 @@ int main() {
                     write(deskryptory[1], &info->tm_year, sizeof(int));
                     exit(1);   
             }
-        //stary watek(watek macierzysty)
+        //stary proces(watek macierzysty)
         default:
             //odbiera rok z pipe i wypisuje
             close(0);
