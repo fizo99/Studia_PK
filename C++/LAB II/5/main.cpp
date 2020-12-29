@@ -26,14 +26,16 @@ template < typename T >
 void test( T a, T b ){
     T aAfter = b;
     T bAfter = a;
+
     std::string type = typeid(T).name();
-    std::string msg = type;
-    msg.append(" test failed");    
+    std::string msg = type + " test failed";
 
     cout << "Type: " << type << endl;
     cout << "Before " << a << " " << b << endl;
+
     swap(a,b);
     assert(a == aAfter && b == bAfter && msg.c_str());
+    
     cout << "After " << aAfter << " " << bAfter << endl <<endl;
 }
 

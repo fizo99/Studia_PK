@@ -12,42 +12,58 @@ int main() {
 	m.fillMatrix();
 	m2.fillMatrix();
 	m3.fillMatrix();
-
-	Matrix *add = m + m2;
-	Matrix *subtract = m - m2;
-	Matrix *multiply = m * m3;
+	
 	std::cout << "INPUT:\n";
 	m.print();
 	m2.print();
 
-	std::cout << "ADDITION\n";
+	// +
+	Matrix *add = m + m2;
+
+	std::cout << "+ operator returns:\n";
 	add->print();
-	std::cout << "SUBTRACTION\n";
+
+	// -
+	Matrix *subtract = m - m2;
+
+	std::cout << "- operator returns:\n";
 	subtract->print();
-	std::cout << "COMPARE: ";
+
+	// ==
 	bool result = m == m2;
-	std::cout << (result == 0 ? "false\n" : "true\n");
-	std::cout << "MULTIPLICATION\n";
+
+	std::cout << "== operator returns:\n";
+	std::cout << (result == 0 ? "false\n" : "true\n") << "\n";
+
+	// []
+	double* ptr = m[0];
+	size_t size = _msize(ptr) / sizeof(double);
+
+	std::cout << "[] operator ([0]) returns:\n";
+	for (size_t i = 0; i < size; i++) {
+		std::cout << ptr[i] << " ";
+	}
+	std::cout << "\n\n";
+
+	// *
+	Matrix *multiply = m * m3;
+
+	std::cout << "* operator:\n";
 	m.print();
 	std::cout << "*\n";
 	m3.print();
 	std::cout << "=\n";
 	multiply->print();
 
-	double* ptr = m[0];
-	size_t size = _msize(ptr) / sizeof(double);
-	std::cout << "First row of first matrix:\n";
-	for (int i = 0; i < size; i++) {
-		std::cout << ptr[i] << " ";
-	}
-
-	std::cout << "\nSAVING TO FILE MATRIX.TXT WITH << OPERATOR\n";
-	m.print();
+	// <<
 	std::ofstream outfile;
 	outfile.open("matrix.txt", std::ofstream::out);
 	outfile << m;
-	std::cout << "READING FROM FILE MATRIX.TXT\n";
 	Matrix fromFile("matrix.txt");
+
+	std::cout << "\n<< operator\nSAVE\n";
+	m.print();
+	std::cout << "READ\n";
 	fromFile.print();
 
 	delete add;
