@@ -18,12 +18,15 @@ int main() {
 	srand(time(NULL));
 
 	////2 arg constructor
-	printf("Matrix(int rows, int cols) rows: %d, cols: %d\n", r, c);
 	Matrix matrix_one(r, c);
+
+	printf("Matrix(int rows, int cols) rows: %d, cols: %d\n", r, c);
 	matrix_one.print();
+
 	// 1 arg constructor
-	printf("Matrix(int dim) dim: %d\n", r);
 	Matrix matrix_square(r);
+
+	printf("Matrix(int dim) dim: %d\n", r);
 	matrix_square.print();
 	
 	// set()
@@ -39,11 +42,9 @@ int main() {
 	printf("Below matrix stored in file matrix.txt\nstore(string filename) "
 		 "filename: matrix.txt\n");
 	matrix_one.print();
+
 	try {
 		matrix_one.store("matrix.txt");
-	}
-	catch (const char *msg) {
-		std::cout << msg;
 	}
 	catch (std::exception &e) {
 		std::cout << e.what();
@@ -64,34 +65,40 @@ int main() {
 		printf("cols() for the matrix from above return value: %d\n\n",
 			matrix_file.cols());
 	}
-	catch (const char *msg) {
-		std::cout << msg;
-	}
 	catch (std::exception &e) {
 		std::cout << e.what();
 	}
 
-	
 	Matrix matrix_two(r, c);
 	Matrix matrix_to_mult(c, r + 2);
 	matrix_two.fill_matrix();
 	matrix_to_mult.fill_matrix();
 	
+	// add
 	try {
 		Matrix *add_matrix = matrix_one.add(matrix_two);
-		Matrix *sub_matrix = matrix_one.subtract(matrix_two);
-		Matrix *mult_matrix = matrix_one.multiply(matrix_to_mult);
-
 		printOutput("ADDITION:", '+', matrix_one, matrix_two, *add_matrix);
-		printOutput("SUBTRACION:", '-', matrix_one, matrix_two, *sub_matrix);
-		printOutput("MULTIPLICATION:", '*', matrix_one, matrix_to_mult, *mult_matrix);
-
 		delete add_matrix;
-		delete sub_matrix;
-		delete mult_matrix;
 	}
-	catch (const char *msg) {
-		std::cout << msg;
+	catch (std::exception &e) {
+		std::cout << e.what();
+	}
+
+	// subtract
+	try {
+		Matrix *sub_matrix = matrix_one.subtract(matrix_two);
+		printOutput("SUBTRACION:", '-', matrix_one, matrix_two, *sub_matrix);
+		delete sub_matrix;
+	}
+	catch (std::exception &e) {
+		std::cout << e.what();
+	}
+
+	// multiply
+	try {
+		Matrix *mult_matrix = matrix_one.multiply(matrix_to_mult);
+		printOutput("MULTIPLICATION:", '*', matrix_one, matrix_to_mult, *mult_matrix);
+		delete mult_matrix;
 	}
 	catch (std::exception &e) {
 		std::cout << e.what();
@@ -99,7 +106,6 @@ int main() {
 
 	//** DB **//
 	printf("\n\n** DB **\n\n");
-
 
 	//saving to db
 	printf("saving to db test.db\n");

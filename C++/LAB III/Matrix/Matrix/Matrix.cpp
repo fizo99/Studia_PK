@@ -179,7 +179,8 @@ void Matrix::fill_matrix() {
 	}
 }
 double* Matrix::to_vector() const noexcept(false) {
-	if (this == nullptr || this->m1 == nullptr) throw "Empty matrix";
+	if (this->m1 == nullptr) throw "Empty matrix";
+	//try catch
 	double *copy = new double[this->rows() * this->cols()];
 	int it = 0;
 	for (int i = 0; i < this->rows(); i++) {
