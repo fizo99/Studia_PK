@@ -8,3 +8,6 @@ Należy rozszerzyć klasę macierzy z ćwiczenia o następujące funkcjonalnośc
 5. operator == służacy do porównywania dwóch macierzy
 6. operator [] służący do pobrania listy zawierającej elementy danego wiersza macierzy
 7. należy napisać funkcję main pokazującą działanie powyższych funkcji
+
+
+## [Proszę wybrać 3 operatory i je przeładować](https://docs.microsoft.com/pl-pl/cpp/cpp/operator-overloading?view=msvc-160)
