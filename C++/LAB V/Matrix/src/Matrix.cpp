@@ -5,6 +5,7 @@
 #include <iostream>
 #include <limits>
 
+// CONSTRUCTORS
 Matrix::Matrix(int row, int col) {
   this->m1 = new double *[row];
   for (int i = 0; i < row; ++i) {
@@ -43,6 +44,8 @@ Matrix::~Matrix() {
     delete[] m1[i];
   delete[] m1;
 }
+
+// setter/getter
 void Matrix::set(int n, int m, double val) {
   if (n < rows() && n >= 0 && m < cols() && m >= 0)
     m1[n][m] = val;
@@ -58,6 +61,7 @@ double Matrix::get(int n, int m) const {
   }
 }
 
+//operators
 Matrix* Matrix::operator+(const Matrix &m2) const {
 	int n = m2.rows();
 	int m = m2.cols();
@@ -153,6 +157,53 @@ void operator<<(std::ofstream& outfile, Matrix &m2) {
 		outfile.close();
 	}
 }
+
+bool Matrix::operator!=(const Matrix &m2) const
+{
+	if (this->rows() != m2.rows() || this->cols() != m2.cols())
+	{
+		return true;
+	}
+	for (int i = 0; i < m2.rows(); i++)
+	{
+		for (int j = 0; j < m2.cols(); j++)
+		{
+			if (this->get(i, j) == m2.get(i, j))
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+//add 1 to all numbers in matrix
+void Matrix::operator++(int)
+{
+	for (int i = 0; i < this->rows(); i++)
+	{
+		for (int j = 0; j < this->cols(); j++)
+		{
+			double val = this->get(i, j) + 1.0;
+			this->set(i, j, val);
+		}
+	}
+}
+//negate all numbers in matrix
+void Matrix::operator--(int)
+{
+	for (int i = 0; i < this->rows(); i++)
+	{
+		for (int j = 0; j < this->cols(); j++)
+		{
+			double val = this->get(i, j) - 1.0;
+			this->set(i, j, val);
+		}
+	}
+}
+
+
+/////////////////
 int Matrix::cols() const { return col; }
 int Matrix::rows() const { return row; }
 void Matrix::print() const {

@@ -33,7 +33,13 @@ int main() {
 	bool result = m == m2;
 
 	std::cout << "== operator returns:\n";
-	std::cout << (result == 0 ? "false\n" : "true\n") << "\n";
+	std::cout << (result == false ? "false\n" : "true\n") << "\n";
+
+	// !=
+	result = m != m2;
+
+	std::cout << "!= operator returns:\n";
+	std::cout << (result == false ? "false\n" : "true\n") << "\n";
 
 	// []
 	double* ptr = m[0];
@@ -65,6 +71,22 @@ int main() {
 	m.print();
 	std::cout << "READ\n";
 	fromFile.print();
+
+	// ++
+	std::cout << "++ operator:\n";
+	std::cout << "before:\n";
+	add->print();
+	std::cout << "after:\n";
+	(*add)++;
+	add->print();
+
+	// --
+	std::cout << "-- operator:\n";
+	std::cout << "before:\n";
+	subtract->print();
+	std::cout << "after:\n";
+	(*subtract)--;
+	subtract->print();
 
 	delete add;
 	delete subtract;
