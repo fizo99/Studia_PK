@@ -177,7 +177,7 @@ bool Matrix::operator!=(const Matrix &m2) const
 	return true;
 }
 
-//add 1 to all numbers in matrix
+//add 1 to every cell
 void Matrix::operator++(int)
 {
 	for (int i = 0; i < this->rows(); i++)
@@ -189,7 +189,7 @@ void Matrix::operator++(int)
 		}
 	}
 }
-//negate all numbers in matrix
+//subtract 1 from every cell
 void Matrix::operator--(int)
 {
 	for (int i = 0; i < this->rows(); i++)
