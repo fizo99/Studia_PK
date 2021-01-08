@@ -1,0 +1,3 @@
+gcc prod.c operacje.c -o prod
+gcc main.c operacje.c -o main
+gcc kons.c operacje.c -o kons
