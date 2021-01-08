@@ -16,6 +16,7 @@ int zwolnijSemafor(int semID, int number)
    return semctl(semID, number, IPC_RMID, NULL);
 }
 
+
 void inicjalizujSemafor(int semID, int number, int val)
 {
 

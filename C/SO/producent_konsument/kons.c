@@ -13,6 +13,7 @@ struct bufor
         long mvalue;
 };
 
+
 int *pam;
 #define MAX2 12
 #define MAX 10

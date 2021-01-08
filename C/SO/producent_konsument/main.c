@@ -11,6 +11,7 @@
 #define PUSTY 1 //typ komunikatu
 #define PELNY 2 //typ komunikatu
 
+
 //struktura komunikatu
 struct bufor
 {

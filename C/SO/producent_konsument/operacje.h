@@ -13,3 +13,4 @@ int waitSemafor(int semID, int number, int flags);
 int signalSemafor(int semID, int number);
 int valueSemafor(int semID, int number);
 //double getRand(int *nseed);
+

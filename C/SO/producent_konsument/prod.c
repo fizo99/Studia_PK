@@ -104,6 +104,7 @@ int main()
         struct sembuf op2={0,1,0};
         semop(semID,&op2,1);
 
+
         komunikat.mtype = PELNY;
         if (msgsnd(msgID, &komunikat, sizeof(komunikat.mvalue), 0) == -1) //wyslanie komun$
         {
