@@ -13,7 +13,6 @@ struct bufor
         long mvalue;
 };
 
-
 int *pam;
 #define MAX2 12
 #define MAX 10
@@ -24,67 +23,92 @@ int *pam;
 
 int main()
 {
-        // key_t klucz, kluczm;
-        // int msgID, shmID;
-        // int i;
-        // struct bufor komunikat;
+        key_t klucz;        //klucz do kolejki komunikatow
+        key_t kluczm;       //klucz do pamieci dzielonej
+        key_t kluczSemafor; //klucz do semaforow
 
-        //printf("konsument--------------------------------\n");
+        int msgID; //id kolejki kom.
+        int shmID; //id pamieci dzielonej
+        int semID; //id semaforow
 
-
-        key_t klucz, kluczm, kluczSemafor;
-        int msgID;
-        int shmID;
-        int semID;
-        
-        int i; // to, co ma trafic do bufora
         struct bufor komunikat;
+        int i;
 
-        //uzyskanie dostepu do kolejki komunikatow
+        /** UZYSKANIE DO ZASOBOW Z MAIN(KOLEJKA,PAMIEC DZIELONA,SEMAFOR) **/
+        //utworzenie klucza do kolejki komunikatow
         if ((klucz = ftok(".", 'A')) == -1)
         {
                 printf("Blad ftok (main)\n");
                 exit(1);
         }
+        //uzyskanie identyfikatora kolejki utworzonej w main
         msgID = msgget(klucz, IPC_CREAT | 0666);
 
-        //uzyskanie dostepu do pamieci dzielonej
+        //utworzenie klucza do pamieci dzielonej
         if ((kluczm = ftok(".", 'B')) == -1)
         {
                 printf("Blad ftok (main)\n");
                 exit(1);
         }
-
-        shmID = shmget(kluczm, MAX2 * sizeof(int), IPC_CREAT | 0666);
-        if (shmID == -1)
+        //uzyskanie identyfikatora pamieci dzielonej utworzonej w main
+        if ((shmID = shmget(kluczm, MAX2 * sizeof(int), IPC_CREAT | 0666)) == -1)
         {
                 printf("blad shmget\n");
                 exit(1);
         }
+        //utworzenie klucza semafora utworzonego w main
+        if ((kluczSemafor = ftok(".", 'C')) == -1)
+        {
+                printf("Blad ftok (C)\n");
+                exit(1);
+        }
+        //uzyskanie identyfikatora semafora
+        semID = alokujSemafor(kluczSemafor, 1, IPC_CREAT | 0666);
+        //przylaczenie pamieci dzielonej
+        pam = (int *)shmat(shmID, NULL, 0);
+        if (*pam == -1)
+        {
+                printf("blad shmat\n");
+                exit(1);
+        }
+        /** ------------------------------------------------------ **/
 
-
-        //wysylanie/odbieranie odpowiednich komunikatow
-        komunikat.mtype = PELNY;
-        if (msgrcv(msgID, &komunikat, sizeof(komunikat.mvalue), komunikat.mtype, 0) == -1)
+        //odebranie komunikatu pelnego
+        if (msgrcv(msgID, &komunikat, sizeof(komunikat.mvalue), PELNY, 0) == -1)
         {
                 printf("blad msgrcv\n");
                 exit(1);
         }
-        //printf("KONSUMENT PID: %d  komunikat odebrany: %d\n",getpid(),komunikat.mtype);
+
+        //odczyt z pamieci dzielonej
+        // SEKCJA KRYTYCZNA
+
+        //zajmij semafor
+        //struct sembuf operacje={0,-1,0};
+        //semop(semID,&operacje,1);
+
+        waitSemafor(semID,0,0);
+
+        fprintf(stderr, "KONSUMENT odczytID: %d, odczytany pid: %d\n", odczyt, pam[odczyt]);
+        odczyt += 1;
+        if(odczyt == MAX) odczyt = 0;
+
+        signalSemafor(semID,0);
+        //opusc semafor
+        //struct sembuf op2={0,1,0};
+        //semop(semID,&op2,1);
+
+        // SEKCJA KRYTYCZNA
 
 
-        //printf("KONSUMENT PID: %d  komunikat wyslany: %d\n",getpid(),komunikat.mtype);
-
-        
-        if ( (kluczSemafor = ftok(".", 'C')) == -1 )
+        //zapis komunikatu pustego
+        komunikat.mtype = PUSTY;
+        if (msgsnd(msgID, &komunikat, sizeof(komunikat.mvalue), 0) == -1)
         {
-                printf("Blad ftok (C)\n");
-                exit(2);
-        }
+                printf("blad wyslania kom. pustego\n");
+                exit(1);
+        };
 
-        semID = alokujSemafor(kluczSemafor, 2, IPC_CREAT | 0666);
-   
-        
         // if(waitSemafor(semID, 1, 0) == -1){
         //         fprintf(stderr,"blad wait semafor");
         // }
@@ -96,37 +120,6 @@ int main()
         // if(signalSemafor(semID, 1) == -1){
         //         fprintf(stderr,"blad signal semafor");
         // }
-
-        //zajmij semafor
-        struct sembuf operacje={0,-1,0};
-        semop(semID,&operacje,1);
-
-        pam = (int *)shmat(shmID, NULL, 0);
-        if (*pam == -1)
-        {
-                printf("blad shmat\n");
-                exit(1);
-        }
-        fprintf(stderr,"KONSUMENT odczytID: %d, odczytany pid: %d\n",odczyt,pam[odczyt]);
-        //printf("Odczytano %d", pam[odczyt]);
-        odczyt += 1;
-
-        //zwolnij semafor
-        struct sembuf op2={0,1,0};
-        semop(semID,&op2,1);
-
-
-
-        komunikat.mtype = PUSTY;
-        if (msgsnd(msgID, &komunikat, sizeof(komunikat.mvalue), 0) == -1) //wyslanie komun$
-        {
-                printf("blad wyslania kom. pustego\n");
-                exit(1);
-        };
-        // //
-
-
-
 
         // if (shmdt(pam) == -1)
         // {
