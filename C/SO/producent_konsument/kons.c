@@ -63,7 +63,7 @@ int main()
                 exit(1);
         }
         //uzyskanie identyfikatora semafora
-        semID = alokujSemafor(kluczSemafor, 1, IPC_CREAT | 0666);
+        semID = alokujSemafor(kluczSemafor, 2, IPC_CREAT | 0666);
         //przylaczenie pamieci dzielonej
         pam = (int *)shmat(shmID, NULL, 0);
         if (*pam == -1)
@@ -83,20 +83,13 @@ int main()
         //odczyt z pamieci dzielonej
         // SEKCJA KRYTYCZNA
 
-        //zajmij semafor
-        //struct sembuf operacje={0,-1,0};
-        //semop(semID,&operacje,1);
-
-        waitSemafor(semID,0,0);
+        waitSemafor(semID,1,0);
 
         fprintf(stderr, "KONSUMENT odczytID: %d, odczytany pid: %d\n", odczyt, pam[odczyt]);
         odczyt += 1;
         if(odczyt == MAX) odczyt = 0;
 
-        signalSemafor(semID,0);
-        //opusc semafor
-        //struct sembuf op2={0,1,0};
-        //semop(semID,&op2,1);
+        signalSemafor(semID,1);
 
         // SEKCJA KRYTYCZNA
 
@@ -109,33 +102,4 @@ int main()
                 exit(1);
         };
 
-        // if(waitSemafor(semID, 1, 0) == -1){
-        //         fprintf(stderr,"blad wait semafor");
-        // }
-
-        // if(waitSemafor(semID, 1,0) == -1){
-        //         fprintf(stderr,"blad signal semafor");
-        // }
-
-        // if(signalSemafor(semID, 1) == -1){
-        //         fprintf(stderr,"blad signal semafor");
-        // }
-
-        // if (shmdt(pam) == -1)
-        // {
-        //         printf("blad schmdt");
-        //         exit(1);
-        // }
-
-        //uzyskanie dosepu do kolejki komunikatow
-
-        //uzyskanie dosepu do pamieci dzielonej
-
-        //przylaczenie pam. dzielonej-- shmat
-
-        //sekcja krytyczna -- semafor -- operacje na pamięci dzielonej
-        //odbieranie/wysylanie odpowiednich komunikatow +
-        // odczyt z bufora  elementu o  indeksie odczyt (pam. dzielona)
-        //modyfikacja indeksu do odczytu
-        //msgrcv -- odbior komunikatu
 }

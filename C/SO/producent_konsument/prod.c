@@ -86,20 +86,12 @@ int main()
         
         // SEKCJA KRYTYCZNA
 
-        //semafor wlacz
-        // struct sembuf operacje={0,-1,0};
-        // semop(semID,&operacje,1);
-
         waitSemafor(semID, 0, 0);
-        fprintf(stderr, "PRODUCENT zapisID: %d, pid: %d\n", zapis, getpid());
 
+        fprintf(stderr, "PRODUCENT zapisID: %d, pid: %d\n", zapis, getpid());
         pam[zapis] = (int)getpid();
         zapis += 1;
         if(zapis == MAX) zapis = 0;
-
-        //semafor wylacz
-        //struct sembuf op2={0,1,0};
-        //semop(semID,&op2,1);
 
         signalSemafor(semID, 0);
         // SEKCJA KRYTYCZNA
@@ -112,40 +104,4 @@ int main()
                 exit(1);
         };
 
-        // if(waitSemafor(semID, 0, 0) == -1){
-        //         fprintf(stderr,"blad wait semafor");
-        // }
-
-        // if(waitSemafor(semID, 0,0) == -1){
-        //         fprintf(stderr,"blad signal semafor");
-        // }
-        // if(signalSemafor(semID, 0) == -1){
-        //         fprintf(stderr,"blad signal semafor");
-        // }
-
-        //zajmij semafor
-
-        // komunikat.mtype = PELNY;
-        // if (msgsnd(msgID, &komunikat, sizeof(komunikat.mvalue), 0) == -1) //wyslanie komun$
-        // {
-        //         printf("blad wyslania kom. pustego\n");
-        //         exit(1);
-        // };
-
-        //
-
-        //zapis komunikatu PELNY do kolejki
-
-        // if (shmdt(pam) == -1)
-        // {
-        //         printf("blad schmdt");
-        //         exit(1);
-        // }
-        //operacje na pamieci dzielonej w sekcji krytycznej -- semafory
-
-        //zapis = zapis + 1;
-
-        //produkcja - dodanie rekordu do puli buforow liczby int  pod indeks - zapis  -- getp$
-        //np. z wykorzystaniem: ---  time(&czas);
-        //modyfikacja indeksu do zapisu
 }

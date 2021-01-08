@@ -63,9 +63,11 @@ int main()
       exit(1);
    }
    //tworzenie semafora
-   semID = alokujSemafor(kluczSemafor, 1, IPC_CREAT | IPC_EXCL | 0666);
+   //semID = alokujSemafor(kluczSemafor, 1, IPC_CREAT | IPC_EXCL | 0666);
+   semID = alokujSemafor(kluczSemafor, 2, IPC_CREAT | IPC_EXCL | 0666);
    //inicjacja zerem
    inicjalizujSemafor(semID, 0, 1); // inicjalizujemy zerami
+   inicjalizujSemafor(semID, 1, 1); // inicjalizujemy zerami
 
    komunikat.mtype = PUSTY; //inicjujemy kolejke komunikatow komunikatami pustymi (1)
    komunikat.mvalue = 0;    //wartosc dowolna
@@ -114,7 +116,8 @@ int main()
       wait(NULL);
 
    //zwalnianie zasobow
-   zwolnijSemafor(semID, 1);
+   //zwolnijSemafor(semID, 1);
+   zwolnijSemafor(semID, 2);
    msgctl(msgID, IPC_RMID, NULL);
    shmctl(shmID, IPC_RMID, NULL);
    printf("MAIN: Koniec.\n");
