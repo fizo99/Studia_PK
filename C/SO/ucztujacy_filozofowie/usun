@@ -1,0 +1,3 @@
+ipcrm --all=msg
+ipcrm --all=sem
+ipcrm --all=shm
