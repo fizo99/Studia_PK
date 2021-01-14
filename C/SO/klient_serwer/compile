@@ -1,0 +1,2 @@
+gcc klient.c -lpthread -o klient
+gcc serwer.c -o serwer
