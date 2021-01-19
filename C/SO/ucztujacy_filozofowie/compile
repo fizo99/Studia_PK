@@ -1,2 +1,3 @@
 gcc main.c operacje.c -lpthread -o main
 gcc filozof.c operacje.c -o filo
+gcc monitor.c operacje.c -o monitor
